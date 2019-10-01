@@ -30941,7 +30941,10 @@ THH:mm:ss.sss
             A <em>CharSet</em> is a mathematical set of characters, either code units or code points depending up the state of the _Unicode_ flag. &ldquo;All characters&rdquo; means either all code unit values or all code point values also depending upon the state of _Unicode_.
           </li>
           <li>
-            A <em>State</em> is an ordered pair (_endIndex_, _captures_) where _endIndex_ is an integer and _captures_ is a List of _NcapturingParens_ values. States are used to represent partial match states in the regular expression matching algorithms. The _endIndex_ is one plus the index of the last input character matched so far by the pattern, while _captures_ holds the results of capturing parentheses. The _n_<sup>th</sup> element of _captures_ is either a List that represents the value obtained by the _n_<sup>th</sup> set of capturing parentheses or *undefined* if the _n_<sup>th</sup> set of capturing parentheses hasn't been reached yet. Due to backtracking, many States may be in use at any time during the matching process.
+            A <em>Range</em> is an ordered pair (_startIndex_, _endIndex_) that represents the range of characters included in a capture, where _startIndex_ is an integer representing the start index (inclusive) of the range within _Input_ and _endIndex_ is an integer representing the end index (exclusive) of the range within _Input_. For any <em>Range</em>, these indices must satisfy the invariant that _startIndex_ ≤ _endIndex_.
+          </li>
+          <li>
+            A <em>State</em> is an ordered pair (_endIndex_, _captures_) where _endIndex_ is an integer and _captures_ is a List of _NcapturingParens_ values. States are used to represent partial match states in the regular expression matching algorithms. The _endIndex_ is one plus the index of the last input character matched so far by the pattern, while _captures_ holds the results of capturing parentheses. The _n_<sup>th</sup> element of _captures_ is either a List that represents the <em>Range</em> obtained by the _n_<sup>th</sup> set of capturing parentheses or *undefined* if the _n_<sup>th</sup> set of capturing parentheses hasn't been reached yet. Due to backtracking, many States may be in use at any time during the matching process.
           </li>
           <li>
             A <em>MatchResult</em> is either a State or the special token ~failure~ that indicates that the match failed.
@@ -31550,12 +31553,12 @@ THH:mm:ss.sss
               1. Let _ye_ be _y_'s _endIndex_.
               1. If _direction_ is equal to +1, then
                 1. Assert: _xe_ &le; _ye_.
-                1. Let _s_ be a new List whose elements are the characters of _Input_ at indices _xe_ (inclusive) through _ye_ (exclusive).
+                1. Let _r_ be the Range (_xe_, _ye_).
               1. Else,
                 1. Assert: _direction_ is equal to -1.
                 1. Assert: _ye_ &le; _xe_.
-                1. Let _s_ be a new List whose elements are the characters of _Input_ at indices _ye_ (inclusive) through _xe_ (exclusive).
-              1. Set _cap_[_parenIndex_ + 1] to _s_.
+                1. Let _r_ be the Range (_ye_, _xe_).
+              1. Set _cap_[_parenIndex_ + 1] to _r_.
               1. Let _z_ be the State (_ye_, _cap_).
               1. Call _c_(_z_) and return its result.
             1. Call _m_(_x_, _d_) and return its result.
@@ -31707,14 +31710,16 @@ THH:mm:ss.sss
           <emu-alg>
             1. Return an internal Matcher closure that takes two arguments, a State _x_ and a Continuation _c_, and performs the following steps:
               1. Let _cap_ be _x_'s _captures_ List.
-              1. Let _s_ be _cap_[_n_].
-              1. If _s_ is *undefined*, return _c_(_x_).
+              1. Let _r_ be _cap_[_n_].
+              1. If _r_ is *undefined*, return _c_(_x_).
               1. Let _e_ be _x_'s _endIndex_.
-              1. Let _len_ be the number of elements in _s_.
+              1. Let _rs_ be _r_'s _startIndex_.
+              1. Let _re_ be _r_'s _endIndex_.
+              1. Let _len_ be _re_ - _rs_.
               1. Let _f_ be _e_ + _direction_ &times; _len_.
               1. If _f_ &lt; 0 or _f_ &gt; _InputLength_, return ~failure~.
               1. Let _g_ be min(_e_, _f_).
-              1. If there exists an integer _i_ between 0 (inclusive) and _len_ (exclusive) such that Canonicalize(_s_[_i_]) is not the same character value as Canonicalize(_Input_[_g_ + _i_]), return ~failure~.
+              1. If there exists an integer _i_ between 0 (inclusive) and _len_ (exclusive) such that Canonicalize(_Input_[_rs_ + _i_]) is not the same character value as Canonicalize(_Input_[_g_ + _i_]), return ~failure~.
               1. Let _y_ be the State (_f_, _cap_).
               1. Call _c_(_y_) and return its result.
           </emu-alg>
@@ -31949,6 +31954,37 @@ THH:mm:ss.sss
       </emu-clause>
     </emu-clause>
 
+    <emu-clause id="sec-regexp-abstract-operations">
+      <h1>RegExp Abstract Operations</h1>
+    
+      <emu-clause id="sec-match-records">
+        <h1>Match Records</h1>
+        <p>A <dfn>Match</dfn> is a Record value used to encapsulate the start and end indices of a regular expression match or capture.</p>
+        <p>Match Records have the fields listed in <emu-xref href="#table-match-record"></emu-xref>.</p>
+        <emu-table id="table-match-record" caption="Match Record Fields">
+          <table>
+            <tbody>
+              <tr>
+                <th>Field Name</th>
+                <th>Value</th>
+                <th>Meaning</th>
+              </tr>
+              <tr>
+                <td>[[StartIndex]]</td>
+                <td>An integer &ge; 0.</td>
+                <td>The number of code units from the start of a string at which the match begins (inclusive).</td>
+              </tr>
+              <tr>
+                <td>[[EndIndex]]</td>
+                <td>An integer &ge; [[StartIndex]].</td>
+                <td>The number of code units from the start of a string at which the match ends (exclusive).</td>
+              </tr>
+            </tbody>
+          </table>
+        </emu-table>
+      </emu-clause>
+    </emu-clause>
+    
     <emu-clause id="sec-regexp-constructor">
       <h1>The RegExp Constructor</h1>
       <p>The RegExp constructor:</p>
@@ -32153,9 +32189,7 @@ THH:mm:ss.sss
                 1. Assert: _r_ is a State.
                 1. Set _matchSucceeded_ to *true*.
             1. Let _e_ be _r_'s _endIndex_ value.
-            1. If _fullUnicode_ is *true*, then
-              1. _e_ is an index into the _Input_ character list, derived from _S_, matched by _matcher_. Let _eUTF_ be the smallest index into _S_ that corresponds to the character at element _e_ of _Input_. If _e_ is greater than or equal to the number of elements in _Input_, then _eUTF_ is the number of code units in _S_.
-              1. Set _e_ to _eUTF_.
+            1. If _fullUnicode_ is *true*, set _e_ to ! GetStringIndex(_S_, _Input_, _e_).
             1. If _global_ is *true* or _sticky_ is *true*, then
               1. Perform ? Set(_R_, `"lastIndex"`, _e_, *true*).
             1. Let _n_ be the number of elements in _r_'s _captures_ List. (This is the same value as <emu-xref href="#sec-notation"></emu-xref>'s _NcapturingParens_.)
@@ -32164,27 +32198,42 @@ THH:mm:ss.sss
             1. Assert: The value of _A_'s `"length"` property is _n_ + 1.
             1. Perform ! CreateDataProperty(_A_, `"index"`, _lastIndex_).
             1. Perform ! CreateDataProperty(_A_, `"input"`, _S_).
-            1. Let _matchedSubstr_ be the matched substring (i.e. the portion of _S_ between offset _lastIndex_ inclusive and offset _e_ exclusive).
+            1. Let _indices_ be a new empty List.
+            1. Let _match_ be the Match { [[StartIndex]]: _lastIndex_, [[EndIndex]]: _e_ }.
+            1. Add _match_ as the last element of _indices_.
+            1. Let _matchedSubstr_ be ! GetMatchString(_S_, _match_).
             1. Perform ! CreateDataProperty(_A_, `"0"`, _matchedSubstr_).
-            1. If _R_ contains any |GroupName|, then
+              1. If _R_ contains any |GroupName|, then
+              1. Let _groupNames_ be a new empty List.
               1. Let _groups_ be ObjectCreate(*null*).
             1. Else,
               1. Let _groups_ be *undefined*.
+              1. Let _groupNames_ be *undefined*.
             1. Perform ! CreateDataProperty(_A_, `"groups"`, _groups_).
             1. For each integer _i_ such that _i_ &gt; 0 and _i_ &le; _n_, do
               1. Let _captureI_ be _i_<sup>th</sup> element of _r_'s _captures_ List.
-              1. If _captureI_ is *undefined*, let _capturedValue_ be *undefined*.
-              1. Else if _fullUnicode_ is *true*, then
-                1. Assert: _captureI_ is a List of code points.
-                1. Let _capturedValue_ be the String value whose code units are the UTF16Encoding of the code points of _captureI_.
+              1. If _captureI_ is *undefined*, then
+                1. Let _capturedValue_ be *undefined*.
+                1. Add *undefined* as the last element of _indices_.
               1. Else,
-                1. Assert: _fullUnicode_ is *false*.
-                1. Assert: _captureI_ is a List of code units.
-                1. Let _capturedValue_ be the String value consisting of the code units of _captureI_.
+                1. Let _captureStart_ be _captureI_'s _startIndex_.
+                1. Let _captureEnd_ be _captureI_'s _endIndex_.
+                1. If _fullUnicode_ is *true*, then
+                  1. Set _captureStart_ to ! GetStringIndex(_S_, _Input_, _captureStart_).
+                  1. Set _captureEnd_ to ! GetStringIndex(_S_, _Input_, _captureEnd_).
+                1. Let _capture_ be the Match { [[StartIndex]]: _captureStart_, [[EndIndex]:: _captureEnd_ }.
+                1. Append _capture_ to _indices_.
+                1. Let _capturedValue_ be ! GetMatchString(_S_, _capture_).
               1. Perform ! CreateDataProperty(_A_, ! ToString(_i_), _capturedValue_).
               1. If the _i_<sup>th</sup> capture of _R_ was defined with a |GroupName|, then
                 1. Let _s_ be the StringValue of the corresponding |RegExpIdentifierName|.
                 1. Perform ! CreateDataProperty(_groups_, _s_, _capturedValue_).
+                1. Assert: _groupNames_ is a List.
+                1. Append _s_ to _groupNames_.
+              1. Else,
+                1. If _groupNames_ is a List, append *undefined* to _groupNames_.
+            1. Let _indicesArray_ be MakeIndicesArray(_S_, _indices_, _groupNames_).
+            1. Perform ! CreateDataProperty(_A_, `"indices"`, _indicesArray_).
             1. Return _A_.
           </emu-alg>
         </emu-clause>
@@ -32201,6 +32250,71 @@ THH:mm:ss.sss
             1. If _index_ + 1 &ge; _length_, return _index_ + 1.
             1. Let _cp_ be ! CodePointAt(_S_, _index_).
             1. Return _index_ + _cp_.[[CodeUnitCount]].
+          </emu-alg>
+        </emu-clause>
+
+        <emu-clause id="sec-getstringindex" aoid="GetStringIndex">
+          <h1>GetStringIndex ( _S_, _Input_, _e_ )</h1>
+          <p>The abstract operation GetStringIndex with with arguments _S_, _Input_, and _e_ performs the following steps:</p>
+          <emu-alg>
+            1. Assert: Type(_S_) is String.
+            1. Assert: _Input_ is a List of the code points of _S_ interpreted as a UTF-16 encoded string.
+            1. Assert: _e_ is an integer value &ge; 0 and &lt; the number of elements in _Input_.
+            1. Let _eUTF_ be the smallest index into _S_ that corresponds to the character at element _e_ of _Input_. If _e_ is greater than or equal to the number of elements in _Input_, then _eUTF_ is the number of code units in _S_.
+            1. Return _eUTF_.
+          </emu-alg>
+        </emu-clause>
+  
+        <emu-clause id="sec-getmatchstring" aoid="GetMatchString">
+          <h1>GetMatchString ( _S_, _match_ )</h1>
+          <p>The abstract operation GetMatchString with arguments _S_ and _match_ performs the following steps:</p>
+          <emu-alg>
+            1. Assert: Type(_S_) is String.
+            1. Assert: _match_ is a Match Record.
+            1. Assert: _match_.[[StartIndex]] is an integer value &ge; 0 and &lt; the length of _S_.
+            1. Assert: _match_.[[EndIndex]] is an integer value &ge; _match_.[[StartIndex]] and &le; the length of _S_.
+            1. Return the portion of _S_ between offset _match_.[[StartIndex]] inclusive and offset _match_.[[EndIndex]] exclusive.
+          </emu-alg>
+        </emu-clause>
+  
+        <emu-clause id="sec-getmatchindicesarray" aoid="GetMatchIndicesArray">
+          <h1>GetMatchIndicesArray ( _S_, _match_ )</h1>
+          <p>The abstract operation GetMatchIndicesArray with arguments _S_ and _match_ performs the following steps:</p>
+          <emu-alg>
+            1. Assert: Type(_S_) is String.
+            1. Assert: _match_ is a Match Record.
+            1. Assert: _match_.[[StartIndex]] is an integer value &ge; 0 and &lt; the length of _S_.
+            1. Assert: _match_.[[EndIndex]] is an integer value &ge; _match_.[[StartIndex]] and &le; the length of _S_.
+            1. Return CreateArrayFromList(&laquo; _match_.[[StartIndex]], _match_.[[EndIndex]] &raquo;).
+          </emu-alg>
+        </emu-clause>
+  
+        <emu-clause id="sec-makeindicesarray" aoid="MakeIndicesArray">
+          <h1>MakeIndicesArray ( _S_ , _indices_, _groupNames_ )</h1>
+          <p>The abstract operation MakeIndicesArray with arguments _S_, _groupNames_, and _indices_ performs the following steps:</p>
+          <emu-alg>
+            1. Assert: Type(_S_) is String.
+            1. Assert: _indices_ is a List.
+            1. Assert: _groupNames_ is a List or is *undefined*.
+            1. Let _n_ be the number of elements in _indices_.
+            1. Assert: _n_ &lt; 2<sup>32</sup>-1.
+            1. Set _A_ to ! ArrayCreate(_n_).
+            1. Assert: The value of _A_'s `"length"` property is _n_.
+            1. If _groupNames_ is not *undefined*, then
+              1. Let _groups_ be ! ObjectCreate(*null*).
+            1. Else,
+              1. Let _groups_ be *undefined*.
+            1. Perform ! CreateDataProperty(_A_, `"groups"`, _groups_).
+            1. For each integer _i_ such that _i_ &ge; 0 and _i_ &lt; _n_, do
+              1. Let _matchIndices_ be _indices_[_i_].
+              1. If _matchIndices_ is not *undefined*, then
+                1. Let _matchIndicesArray_ be ! GetMatchIndicesArray(_S_, _matchIndices_).
+              1. Else,
+                1. Let _matchIndicesArray_ be *undefined*.
+              1. Perform ! CreateDataProperty(_A_, ! ToString(_i_), _matchIndicesArray_).
+              1. If _groupNames_ is not *undefined* and _groupNames_[_i_] is not *undefined*, then
+                1. Perform ! CreateDataProperty(_groups_, _groupNames_[_i_], _matchIndicesArray_).
+            1. Return _A_.
           </emu-alg>
         </emu-clause>
       </emu-clause>
