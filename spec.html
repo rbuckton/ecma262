@@ -31954,37 +31954,6 @@ THH:mm:ss.sss
       </emu-clause>
     </emu-clause>
 
-    <emu-clause id="sec-regexp-abstract-operations">
-      <h1>RegExp Abstract Operations</h1>
-
-      <emu-clause id="sec-match-records">
-        <h1>Match Records</h1>
-        <p>A <dfn>Match Record</dfn> is a Record value used to encapsulate the start and end indices of a regular expression match or capture.</p>
-        <p>Match Records have the fields listed in <emu-xref href="#table-match-record"></emu-xref>.</p>
-        <emu-table id="table-match-record" caption="Match Record Fields">
-          <table>
-            <tbody>
-              <tr>
-                <th>Field Name</th>
-                <th>Value</th>
-                <th>Meaning</th>
-              </tr>
-              <tr>
-                <td>[[StartIndex]]</td>
-                <td>An integer &ge; 0.</td>
-                <td>The number of code units from the start of a string at which the match begins (inclusive).</td>
-              </tr>
-              <tr>
-                <td>[[EndIndex]]</td>
-                <td>An integer &ge; [[StartIndex]].</td>
-                <td>The number of code units from the start of a string at which the match ends (exclusive).</td>
-              </tr>
-            </tbody>
-          </table>
-        </emu-table>
-      </emu-clause>
-    </emu-clause>
-
     <emu-clause id="sec-regexp-constructor">
       <h1>The RegExp Constructor</h1>
       <p>The RegExp constructor:</p>
@@ -32263,6 +32232,33 @@ THH:mm:ss.sss
             1. Let _eUTF_ be the smallest index into _S_ that corresponds to the character at element _e_ of _Input_. If _e_ is greater than or equal to the number of elements in _Input_, then _eUTF_ is the number of code units in _S_.
             1. Return _eUTF_.
           </emu-alg>
+        </emu-clause>
+
+        <emu-clause id="sec-match-records">
+          <h1>Match Records</h1>
+          <p>A <dfn>Match Record</dfn> is a Record value used to encapsulate the start and end indices of a regular expression match or capture.</p>
+          <p>Match Records have the fields listed in <emu-xref href="#table-match-record"></emu-xref>.</p>
+          <emu-table id="table-match-record" caption="Match Record Fields">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Field Name</th>
+                  <th>Value</th>
+                  <th>Meaning</th>
+                </tr>
+                <tr>
+                  <td>[[StartIndex]]</td>
+                  <td>An integer &ge; 0.</td>
+                  <td>The number of code units from the start of a string at which the match begins (inclusive).</td>
+                </tr>
+                <tr>
+                  <td>[[EndIndex]]</td>
+                  <td>An integer &ge; [[StartIndex]].</td>
+                  <td>The number of code units from the start of a string at which the match ends (exclusive).</td>
+                </tr>
+              </tbody>
+            </table>
+          </emu-table>
         </emu-clause>
 
         <emu-clause id="sec-getmatchstring" aoid="GetMatchString">
