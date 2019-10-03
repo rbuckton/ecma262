@@ -31959,7 +31959,7 @@ THH:mm:ss.sss
 
       <emu-clause id="sec-match-records">
         <h1>Match Records</h1>
-        <p>A <dfn>Match</dfn> is a Record value used to encapsulate the start and end indices of a regular expression match or capture.</p>
+        <p>A <dfn>Match Record</dfn> is a Record value used to encapsulate the start and end indices of a regular expression match or capture.</p>
         <p>Match Records have the fields listed in <emu-xref href="#table-match-record"></emu-xref>.</p>
         <emu-table id="table-match-record" caption="Match Record Fields">
           <table>
@@ -32199,7 +32199,7 @@ THH:mm:ss.sss
             1. Perform ! CreateDataProperty(_A_, `"index"`, _lastIndex_).
             1. Perform ! CreateDataProperty(_A_, `"input"`, _S_).
             1. Let _indices_ be a new empty List.
-            1. Let _match_ be the Match { [[StartIndex]]: _lastIndex_, [[EndIndex]]: _e_ }.
+            1. Let _match_ be the Match Record { [[StartIndex]]: _lastIndex_, [[EndIndex]]: _e_ }.
             1. Add _match_ as the last element of _indices_.
             1. Let _matchedSubstr_ be ! GetMatchString(_S_, _match_).
             1. Perform ! CreateDataProperty(_A_, `"0"`, _matchedSubstr_).
@@ -32221,7 +32221,7 @@ THH:mm:ss.sss
                 1. If _fullUnicode_ is *true*, then
                   1. Set _captureStart_ to ! GetStringIndex(_S_, _Input_, _captureStart_).
                   1. Set _captureEnd_ to ! GetStringIndex(_S_, _Input_, _captureEnd_).
-                1. Let _capture_ be the Match { [[StartIndex]]: _captureStart_, [[EndIndex]]: _captureEnd_ }.
+                1. Let _capture_ be the Match Record { [[StartIndex]]: _captureStart_, [[EndIndex]]: _captureEnd_ }.
                 1. Append _capture_ to _indices_.
                 1. Let _capturedValue_ be ! GetMatchString(_S_, _capture_).
               1. Perform ! CreateDataProperty(_A_, ! ToString(_i_), _capturedValue_).
