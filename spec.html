@@ -31057,7 +31057,7 @@ THH:mm:ss.sss
 
         <emu-clause id="sec-advancestringindex" aoid="AdvanceStringIndex">
           <h1>AdvanceStringIndex ( _S_, _index_, _unicode_ )</h1>
-          <p>The abstract operation GetStringIndex takes arguments _S_, _Input_, and _e_. It performs the following steps when called:</p>
+          <p>The abstract operation AdvanceStringIndex takes arguments _S_ (a String), _index_ (a non-negative integer), and _unicode_ (a Boolean). It performs the following steps when called:</p>
           <emu-alg>
             1. Assert: _index_ &le; 2<sup>53</sup> - 1.
             1. If _unicode_ is *false*, return _index_ + 1.
