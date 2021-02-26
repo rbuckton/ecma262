@@ -31070,10 +31070,9 @@ THH:mm:ss.sss
 
         <emu-clause id="sec-getstringindex" aoid="GetStringIndex">
           <h1>GetStringIndex ( _S_, _Input_, _e_ )</h1>
-          <p>The abstract operation GetStringIndex takes arguments _S_, _Input_, and _e_. It performs the following steps when called:</p>
+          <p>The abstract operation GetStringIndex takes arguments _S_ (a String), _Input_ (a List), and _e_. It performs the following steps when called:</p>
           <emu-alg>
-            1. Assert: Type(_S_) is String.
-            1. Assert: _Input_ is a List of the code points of _S_ interpreted as a UTF-16 encoded string.
+            1. Assert: _Input_ contains the code points of _S_ interpreted as a UTF-16 encoded string.
             1. Assert: _e_ is an integer value &ge; 0.
             1. If _S_ is the empty String, return 0.
             1. Let _eUTF_ be the smallest index into _S_ that corresponds to the character at element _e_ of _Input_. If _e_ is greater than or equal to the number of elements in _Input_, then _eUTF_ is the number of code units in _S_.
@@ -31110,10 +31109,8 @@ THH:mm:ss.sss
 
         <emu-clause id="sec-getmatchstring" aoid="GetMatchString">
           <h1>GetMatchString ( _S_, _match_ )</h1>
-          <p>The abstract operation GetMatchString takes arguments _S_ and _match_. It performs the following steps when called:</p>
+          <p>The abstract operation GetMatchString takes arguments _S_ (a String) and _match_ (a Match Record). It performs the following steps when called:</p>
           <emu-alg>
-            1. Assert: Type(_S_) is String.
-            1. Assert: _match_ is a Match Record.
             1. Assert: _match_.[[StartIndex]] is an integer value &ge; 0 and &le; the length of _S_.
             1. Assert: _match_.[[EndIndex]] is an integer value &ge; _match_.[[StartIndex]] and &le; the length of _S_.
             1. Return the substring of _S_ from _match_.[[StartIndex]] to _match_.[[EndIndex]].
@@ -31122,10 +31119,8 @@ THH:mm:ss.sss
 
         <emu-clause id="sec-getmatchindicesarray" aoid="GetMatchIndicesArray">
           <h1>GetMatchIndicesArray ( _S_, _match_ )</h1>
-          <p>The abstract operation GetMatchIndicesArray takes arguments _S_ and _match_. It performs the following steps when called:</p>
+          <p>The abstract operation GetMatchIndicesArray takes arguments _S_ (a String) and _match_ (a Match Record). It performs the following steps when called:</p>
           <emu-alg>
-            1. Assert: Type(_S_) is String.
-            1. Assert: _match_ is a Match Record.
             1. Assert: _match_.[[StartIndex]] is an integer value &ge; 0 and &lt; the length of _S_.
             1. Assert: _match_.[[EndIndex]] is an integer value &ge; _match_.[[StartIndex]] and &le; the length of _S_.
             1. Return ! CreateArrayFromList(&laquo; 𝔽(_match_.[[StartIndex]]), 𝔽(_match_.[[EndIndex]]) &raquo;).
@@ -31134,15 +31129,12 @@ THH:mm:ss.sss
 
         <emu-clause id="sec-makeindicesarray" aoid="MakeIndicesArray">
           <h1>MakeIndicesArray ( _S_, _indices_, _groupNames_, _hasGroups_ )</h1>
-          <p>The abstract operation MakeIndicesArray takes arguments _S_, _indices_, _groupNames_, and _hasGroups_. It performs the following steps when called:</p>
+          <p>The abstract operation MakeIndicesArray takes arguments _S_ (a String), _indices_ (a List), _groupNames_ (a List), and _hasGroups_ (a Boolean). It performs the following steps when called:</p>
           <emu-alg>
-            1. Assert: Type(_S_) is String.
-            1. Assert: _indices_ is a List.
             1. Let _n_ be the number of elements in _indices_.
             1. Assert: _n_ &lt; 2<sup>32</sup> - 1.
-            1. Assert: _groupNames_ is a List with _n_ - 1 elements.
+            1. Assert: _groupNames_ has _n_ - 1 elements.
             1. NOTE: The _groupNames_ List contains elements aligned with the _indices_ List starting at _indices_[1].
-            1. Assert: Type(_hasGroups_) is Boolean.
             1. Let _A_ be ! ArrayCreate(_n_).
             1. Assert: The value of _A_'s *"length"* property is 𝔽(_n_).
             1. If _hasGroups_ is *true*, then
