@@ -4702,10 +4702,10 @@
               [[Kind]]
             </td>
             <td>
-              ~field~, ~method~, ~accessor~, ~getter~, ~setter~
+              ~field~, ~method~, ~accessor~, ~getter~, or ~setter~
             </td>
             <td>
-              ~field~, ~method~, ~accessor~, ~getter~, ~setter~
+              ~field~, ~method~, ~accessor~, ~getter~, or ~setter~
             </td>
             <td>
               The kind of the element.
@@ -4719,7 +4719,7 @@
               ~method~
             </td>
             <td>
-              a function object.
+              a function object
             </td>
             <td>
               The function for a method definition.
@@ -4733,7 +4733,7 @@
               ~accessor~ and ~getter~
             </td>
             <td>
-              a function object.
+              a function object
             </td>
             <td>
               The getter for an accessor definition.
@@ -4747,7 +4747,7 @@
               ~accessor~ and ~setter~
             </td>
             <td>
-              a function object.
+              a function object
             </td>
             <td>
               The setter for an accessor definition.
@@ -4775,7 +4775,7 @@
               ~field~, ~method~, ~accessor~, ~getter~, ~setter~
             </td>
             <td>
-              a list of function objects or ~empty~
+              a List of function objects or ~empty~
             </td>
             <td>
               The decorators applied to the class element, if any.
@@ -4789,7 +4789,7 @@
               ~field~ and ~accessor~
             </td>
             <td>
-              a list of function objects
+              a List of function objects
             </td>
             <td>
               The initializers of the field or accessor, if any.
@@ -4821,7 +4821,7 @@
               [[Constructor]]
             </td>
             <td>
-              any ECMAScript language value or ~empty~
+              an ECMAScript language value or ~empty~
             </td>
             <td>
               The metadata associated with a class directly via a class decorator
@@ -7051,7 +7051,7 @@
       <h1>
         InitializePrivateMethods (
           _O_: an Object,
-          _elementDefinitions_: a List of ClassElementDefinition records,
+          _elementDefinitions_: a List of ClassElementDefinition Records,
         ): either a normal completion containing ~unused~ or an abrupt completion
       </h1>
       <dl class="header">
@@ -7085,7 +7085,7 @@
       </emu-note>
     </emu-clause>
 
-    <emu-clause id="sec-initializefieldoraccessor" d type="abstract operation">
+    <emu-clause id="sec-initializefieldoraccessor" type="abstract operation">
       <h1>
         InitializeFieldOrAccessor (
           _receiver_: an Object,
@@ -13805,7 +13805,7 @@
       <h1>
         DefineMethodProperty (
           _homeObject_: an Object,
-          _methodDefinition_: a ClassElementDefinition record,
+          _methodDefinition_: a ClassElementDefinition Record,
           _enumerable_: a Boolean,
         ): either a normal completion containing ~unused~, or an abrupt completion
       </h1>
@@ -18634,7 +18634,7 @@
         </emu-alg>
         <emu-grammar>PropertyDefinition : MethodDefinition</emu-grammar>
         <emu-alg>
-          1. Let _methodDefinition_ be ? MethodDefinitionEvaluation of |MethodDefinition| with arguments _object_.
+          1. Let _methodDefinition_ be ? MethodDefinitionEvaluation of |MethodDefinition| with argument _object_.
           1. Perform ? DefineMethodProperty(_object_, _methodDefinition_, *true*).
           1. Return ~unused~.
         </emu-alg>
@@ -23883,7 +23883,7 @@
       <h1>
         Runtime Semantics: MethodDefinitionEvaluation (
           _object_: unknown,
-        ): either a normal completion containing a ClassElementDefinition, or an abrupt completion
+        ): either a normal completion containing a ClassElementDefinition Record, or an abrupt completion
       </h1>
       <dl class="header">
       </dl>
@@ -23891,7 +23891,7 @@
       <emu-alg>
         1. Let _methodDef_ be ? DefineMethod of |MethodDefinition| with argument _object_.
         1. Perform SetFunctionName(_methodDef_.[[Closure]], _methodDef_.[[Key]]).
-        1. Return ClassElementDefinition { [[Key]]: _methodDef_.[[Key]], [[Kind]]: ~method~, [[Value]]: _methodDef_.[[Closure]], [[Decorators]]: ~empty~ }.
+        1. Return ClassElementDefinition Record { [[Key]]: _methodDef_.[[Key]], [[Kind]]: ~method~, [[Value]]: _methodDef_.[[Closure]], [[Decorators]]: ~empty~ }.
       </emu-alg>
       <emu-grammar>MethodDefinition : `get` ClassElementName `(` `)` `{` FunctionBody `}`</emu-grammar>
       <emu-alg>
@@ -23904,7 +23904,7 @@
         1. Let _closure_ be OrdinaryFunctionCreate(%Function.prototype%, _sourceText_, _formalParameterList_, |FunctionBody|, ~non-lexical-this~, _env_, _privateEnv_).
         1. Perform MakeMethod(_closure_, _object_).
         1. Perform SetFunctionName(_closure_, _propKey_, *"get"*).
-        1. Return ClassElementDefinition { [[Key]]: _propKey_, [[Kind]]: ~getter~, [[Get]]: _closure_, [[Decorators]]: ~empty~ }.
+        1. Return ClassElementDefinition Record { [[Key]]: _propKey_, [[Kind]]: ~getter~, [[Get]]: _closure_, [[Decorators]]: ~empty~ }.
       </emu-alg>
       <emu-grammar>MethodDefinition : `set` ClassElementName `(` PropertySetParameterList `)` `{` FunctionBody `}`</emu-grammar>
       <emu-alg>
@@ -23916,7 +23916,7 @@
         1. Let _closure_ be OrdinaryFunctionCreate(%Function.prototype%, _sourceText_, |PropertySetParameterList|, |FunctionBody|, ~non-lexical-this~, _env_, _privateEnv_).
         1. Perform MakeMethod(_closure_, _object_).
         1. Perform SetFunctionName(_closure_, _propKey_, *"set"*).
-        1. Return ClassElementDefinition { [[Key]]: _propKey_, [[Kind]]: ~setter~, [[Set]]: _closure_, [[Decorators]]: ~empty~ }.
+        1. Return ClassElementDefinition Record { [[Key]]: _propKey_, [[Kind]]: ~setter~, [[Set]]: _closure_, [[Decorators]]: ~empty~ }.
       </emu-alg>
       <emu-grammar>GeneratorMethod : `*` ClassElementName `(` UniqueFormalParameters `)` `{` GeneratorBody `}`</emu-grammar>
       <emu-alg>
@@ -23930,7 +23930,7 @@
         1. Perform SetFunctionName(_closure_, _propKey_).
         1. Let _prototype_ be OrdinaryObjectCreate(%GeneratorFunction.prototype.prototype%).
         1. Perform ! DefinePropertyOrThrow(_closure_, *"prototype"*, PropertyDescriptor { [[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false* }).
-        1. Return ClassElementDefinition { [[Key]]: _propKey_, [[Kind]]: ~method~, [[Value]]: _closure_, [[Decorators]]: ~empty~ }.
+        1. Return ClassElementDefinition Record { [[Key]]: _propKey_, [[Kind]]: ~method~, [[Value]]: _closure_, [[Decorators]]: ~empty~ }.
       </emu-alg>
       <emu-grammar>
         AsyncGeneratorMethod : `async` `*` ClassElementName `(` UniqueFormalParameters `)` `{` AsyncGeneratorBody `}`
@@ -23946,7 +23946,7 @@
         1. Perform SetFunctionName(_closure_, _propKey_).
         1. Let _prototype_ be OrdinaryObjectCreate(%AsyncGeneratorFunction.prototype.prototype%).
         1. Perform ! DefinePropertyOrThrow(_closure_, *"prototype"*, PropertyDescriptor { [[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false* }).
-        1. Return ClassElementDefinition { [[Key]]: _propKey_, [[Kind]]: ~method~, [[Value]]: _closure_, [[Decorators]]: ~empty~ }.
+        1. Return ClassElementDefinition Record { [[Key]]: _propKey_, [[Kind]]: ~method~, [[Value]]: _closure_, [[Decorators]]: ~empty~ }.
       </emu-alg>
       <emu-grammar>
         AsyncMethod : `async` ClassElementName `(` UniqueFormalParameters `)` `{` AsyncFunctionBody `}`
@@ -23960,7 +23960,7 @@
         1. Let _closure_ be OrdinaryFunctionCreate(%AsyncFunction.prototype%, _sourceText_, |UniqueFormalParameters|, |AsyncFunctionBody|, ~non-lexical-this~, _env_, _privateEnv_).
         1. Perform MakeMethod(_closure_, _object_).
         1. Perform SetFunctionName(_closure_, _propKey_).
-        1. Return ClassElementDefinition { [[Key]]: _propKey_, [[Kind]]: ~method~, [[Value]]: _closure_, [[Decorators]]: ~empty~ }.
+        1. Return ClassElementDefinition Record { [[Key]]: _propKey_, [[Kind]]: ~method~, [[Value]]: _closure_, [[Decorators]]: ~empty~ }.
       </emu-alg>
     </emu-clause>
   </emu-clause>
@@ -24415,7 +24415,9 @@
     </emu-grammar>
 
     <emu-clause id="sec-decoratorevaluation" type="sdo">
-      <h1>Runtime Semantics: DecoratorEvaluation</h1>
+      <h1>Runtime Semantics: DecoratorEvaluation ( ): either a normal completion containing an ECMAScript language value or an abrupt completion</h1>
+      <dl class="header">
+      </dl>
       <emu-grammar>Decorator : `@` DecoratorMemberExpression</emu-grammar>
       <emu-alg>
         1. Let _expr_ be the |MemberExpression| that is covered by |DecoratorMemberExpression|.
@@ -24437,7 +24439,9 @@
     </emu-clause>
 
     <emu-clause id="sec-decoratorlistevaluation" type="sdo">
-      <h1>Runtime Semantics: DecoratorListEvaluation</h1>
+      <h1>Runtime Semantics: DecoratorListEvaluation ( ): either a normal completion containing a List of ECMAScript language values or an abrupt completion</h1>
+      <dl class="header">
+      </dl>
       <emu-grammar>DecoratorList : DecoratorList? Decorator</emu-grammar>
       <emu-alg>
         1. If |DecoratorList| is present, then
@@ -24453,7 +24457,7 @@
     <emu-clause id="sec-createdecoratoraccessobject" type="abstract operation">
       <h1>
         CreateDecoratorAccessObject (
-          _kind_: ~field~, ~accessor~, ~method~, ~getter~, or ~setter~,
+          _kind_: ~field~, ~method~, ~accessor~, ~getter~, or ~setter~,
           _name_: a Private Name,
         ): an Object
       </h1>
@@ -24463,14 +24467,14 @@
       </dl>
       <emu-alg>
         1. Let _accessObj_ be OrdinaryObjectCreate(%Object.prototype%).
-        1. If _kind_ is ~field~, ~accessor~, ~method~, or ~getter~, then
+        1. If _kind_ is ~field~, ~method~, ~accessor~, or ~getter~, then
           1. Let _getterClosure_ be a new Abstract Closure with no parameters that captures _name_ and performs the following steps when called:
             1. Let _o_ be the *this* value.
             1. Return ? PrivateGet(_name_, _o_).
           1. Let _getter_ be CreateBuiltinFunction(_getterClosure_, 0, *""*, &laquo; &raquo;).
           1. Perform ! CreateDataPropertyOrThrow(_accessObj_, *"get"*, _getter_).
         1. If _kind_ is ~field~, ~accessor~, or ~setter~, then
-          1. Let _setterClosure_ be a new Abstract Closure with parameter (_value_) that captures _name_ and performs the following steps when called:
+          1. Let _setterClosure_ be a new Abstract Closure with parameters (_value_) that captures _name_ and performs the following steps when called:
             1. Let _o_ be the *this* value.
             1. Perform ? PrivateSet(_name_, _o_, _value_).
             1. Return *undefined*.
@@ -24492,7 +24496,7 @@
         <dd>Creates a function for a decorator's context object which can be used to add an extra initializer to the class.</dd>
       </dl>
       <emu-alg>
-        1. Let _addInitializerClosure_ be a new Abstract Closure with parameter (_initializer_) that captures _initializers_ and _decorationState_ and performs the following steps when called:
+        1. Let _addInitializerClosure_ be a new Abstract Closure with parameters (_initializer_) that captures _initializers_ and _decorationState_ and performs the following steps when called:
           1. If _decorationState_.[[Finished]] is *true*, throw a *TypeError* exception.
           1. Append _initializer_ to _initializers_.
           1. Return *undefined*.
@@ -24505,7 +24509,7 @@
         CreateSetMetadataFunction (
           _kind_: ~constructor~, ~public~, or ~private~,
           _metadataList_: a List of Metadata Records,
-          _propertyKey_: a String, Symbol, Private Name, or ~empty~,
+          _propertyKey_: a String, a Symbol, a Private Name, or ~empty~,
           _decorationState_: a Record with a field [[Finished]] (a Boolean),
         ): a function object
       </h1>
@@ -24514,12 +24518,12 @@
         <dd>It returns a function that can be used to define metadata on the passed in _metadataList_ which is associated with the given _kind_ and, if provided, _propertyKey_.</dd>
       </dl>
       <emu-alg>
-        1. Let _setMetadataClosure_ be a new Abstract Closure with parameter (_metadataKey_, _value_) that captures _kind_, _metadataList_, _propertyKey_, and _decorationState_ and performs the following steps when called:
+        1. Let _setMetadataClosure_ be a new Abstract Closure with parameters (_metadataKey_, _value_) that captures _kind_, _metadataList_, _propertyKey_, and _decorationState_ and performs the following steps when called:
           1. If _decorationState_.[[Finished]] is *true*, throw a *TypeError* exception.
           1. If Type(_metadataKey_) is not Symbol, throw a *TypeError* exception.
           1. Let _metadataForKey_ be the element of _metadataList_ whose [[Key]] is the same as _metadataKey_.
           1. If _metadataForKey_ does not exist, then
-            1. Set _metadataForKey_ to a new Metadata Record { [[Key]]: _metadataKey_, [[Constructor]]: ~empty~, [[Public]]: &laquo; &raquo;, [[Private]]: &laquo; &raquo; }.
+            1. Set _metadataForKey_ to Metadata Record { [[Key]]: _metadataKey_, [[Constructor]]: ~empty~, [[Public]]: &laquo; &raquo;, [[Private]]: &laquo; &raquo; }.
             1. Append _metadataForKey_ to _metadataList_.
           1. If _kind_ is ~constructor~, set _metadataForKey_.[[Constructor]] to _value_.
           1. If _kind_ is ~public~, then
@@ -24544,7 +24548,7 @@
         CreateGetMetadataFunction (
           _kind_: ~constructor~, ~public~, or ~private~,
           _metadataList_: a List of Metadata Records,
-          _propertyKey_: a String, Symbol, Private Name, or ~empty~,
+          _propertyKey_: a String, a Symbol, a Private Name, or ~empty~,
           _decorationState_: a Record with a field [[Finished]] (a Boolean),
         ): a function object
       </h1>
@@ -24553,20 +24557,20 @@
         <dd>It returns a function that can be used to get metadata on the passed in _metadataList_ which is associated with the given _kind_ and, if provided, _propertyKey_.</dd>
       </dl>
       <emu-alg>
-        1. Let _getMetadataClosure_ be a new Abstract Closure with parameter (_metadataKey_) that captures _kind_, _metadataList_, _propertyKey_, and _decorationState_ and performs the following steps when called:
+        1. Let _getMetadataClosure_ be a new Abstract Closure with parameters (_metadataKey_) that captures _kind_, _metadataList_, _propertyKey_, and _decorationState_ and performs the following steps when called:
           1. If _decorationState_.[[Finished]] is *true*, throw a *TypeError* exception.
           1. If _metadataKey_ is not a Symbol, throw a *TypeError* exception.
-          1. Let _metadataForKey_ be the element in _metadataList_ whose [[Key]] is the same as _metadataKey_.
+          1. Let _metadataForKey_ be the element of _metadataList_ whose [[Key]] is the same as _metadataKey_.
           1. If _metadataForKey_ does not exist, return *undefined*.
           1. If _kind_ is ~constructor~, then
             1. If _metadataForKey_.[[Constructor]] is ~empty~, return *undefined*.
             1. Return _metadataForKey_.[[Constructor]].
           1. If _kind_ is ~public~, then
-            1. Let _publicMetadata_ be the element in _metadataForKey_.[[Public]] whose [[Key]] is the same as _propertyKey_.
+            1. Let _publicMetadata_ be the element of _metadataForKey_.[[Public]] whose [[Key]] is the same as _propertyKey_.
             1. If _publicMetadata_ does not exist, return *undefined*.
             1. Return _publicMetadata_.[[Value]].
           1. If _kind_ is ~private~, then
-            1. Let _privateMetadata_ be the element in _metadataForKey_.[[Private]] whose [[Key]] is the same as _propertyKey_.
+            1. Let _privateMetadata_ be the element of _metadataForKey_.[[Private]] whose [[Key]] is the same as _propertyKey_.
             1. If _privateMetadata_ does not exist, return *undefined*.
             1. Return _privateMetadata_.[[Value]].
         1. Return CreateBuiltinFunction(_getMetadataClosure_, _length_, *""*, &laquo; &raquo;).
@@ -24608,10 +24612,10 @@
             1. Let _parentPrivateMetadata_ be ? Get(_parentMetadataObjForKey_, *"private"*).
             1. If _parentPrivateMetadata_ is *undefined*, let _privateMetadata_ be a new empty List.
             1. Else, let _privateMetadata_ be ? CreateListFromArrayLike(_parentPrivateMetadata_).
-            1. For each element _meta_ in _metadataRecord_.[[Private]], do
+            1. For each element _meta_ of _metadataRecord_.[[Private]], do
               1. Append _meta_.[[Value]] to _privateMetadata_.
             1. Let _privateMetadataArray_ be CreateArrayFromList(_privateMetadata_).
-            1. Perform ! CreateDataPropertyOrThrow(_metadataObjForKey_, *"private"* , _privateMetadataArray_).
+            1. Perform ! CreateDataPropertyOrThrow(_metadataObjForKey_, *"private"*, _privateMetadataArray_).
           1. Perform ! CreateDataPropertyOrThrow(_metadataObj_, _key_, _metadataObjForKey_).
         1. Perform ! CreateDataPropertyOrThrow(_targetObject_, @@metadata, _metadataObj_).
       </emu-alg>
@@ -24620,13 +24624,13 @@
     <emu-clause id="sec-createdecoratorcontextobject" type="abstract operation">
       <h1>
         CreateDecoratorContextObject (
-          _kind_: ~class~, ~field~, ~accessor~, ~method~, ~getter~, or ~setter~,
-          _name_: a String, Symbol, or Private Name,
+          _kind_: ~class~, ~field~, ~method~, ~accessor~, ~getter~, or ~setter~,
+          _name_: a String, a Symbol, or a Private Name,
           _metadataList_: a List of Metadata Records,
           _initializers_: a List of function objects,
           _decorationState_: a Record with a field [[Finished]] (a Boolean),
           optional _isStatic_: a Boolean,
-        )
+        ): an Object
       </h1>
       <dl class="header">
         <dt>description</dt>
@@ -24634,7 +24638,7 @@
       </dl>
       <emu-alg>
         1. Let _contextObj_ be OrdinaryObjectCreate(%Object.prototype%).
-        1. If _kind_ is ~method~, let _kindStr_ *"method"*.
+        1. If _kind_ is ~method~, let _kindStr_ be *"method"*.
         1. Else if _kind_ is ~getter~, let _kindStr_ be *"getter"*.
         1. Else if _kind_ is ~setter~, let _kindStr_ be *"setter"*.
         1. Else if _kind_ is ~accessor~, let _kindStr_ be *"accessor"*.
@@ -24734,7 +24738,7 @@
                 1. Set _elementRecord_.[[Value]] to _newValue_.
             1. Else if _newValue_ is not *undefined*, throw a *TypeError* exception.
         1. Set _elementRecord_.[[Decorators]] to ~empty~.
-        1. return ~unused~.
+        1. Return ~unused~.
       </emu-alg>
     </emu-clause>
 
@@ -25258,16 +25262,16 @@
       <h1>
         ApplyDecoratorsAndDefineMethod (
           _homeObject_: an Object,
-          _methodDefinition_: a ClassElementDefinition record,
+          _methodDefinition_: a ClassElementDefinition Record,
           _metadataList_: a List of Metadata Records,
-          _extraInitializers_: A List of function objects,
-          _isStatic_: boolean,
+          _extraInitializers_: a List of function objects,
+          _isStatic_: a Boolean,
         ): either a normal completion containing ~unused~, or an abrupt completion
       </h1>
       <dl class="header">
       </dl>
       <emu-alg>
-        1. Perform ? ApplyDecoratorsToElementDefinition(_homeObject_, _methodDefinitinn_, metadataList_, extraInitializers_, _isStatic_).
+        1. Perform ? ApplyDecoratorsToElementDefinition(_homeObject_, _methodDefinitinn_, _metadataList_, _extraInitializers_, _isStatic_).
         1. Perform ? DefineMethodProperty(_homeObject_, _methodDefinition_, _isStatic_).
         1. Return ~unused~.
       </emu-alg>
@@ -25278,7 +25282,7 @@
         CreateFieldInitializerFunction (
           _homeObject_: an Object,
           _propName_: a property key or Private Name,
-          _Initializer_: a Function,
+          _Initializer_: a function object,
         ): a function object
       </h1>
       <dl class="header">
@@ -25306,7 +25310,7 @@
       <dl class="header">
       </dl>
       <emu-alg>
-        1. Let _getterClosure_ be a new Abstract Closure with no parameters that captures _privateStateName_ and perform the following steps when called:
+        1. Let _getterClosure_ be a new Abstract Closure with no parameters that captures _privateStateName_ and performs the following steps when called:
           1. Let _o_ be the *this* value.
           1. Return ? PrivateGet(_privateStateName_, _o_).
         1. Let _getter_ be CreateBuiltinFunction(_getterClosure_, 0, *"get"*, &laquo; &raquo;).
@@ -25326,7 +25330,7 @@
       <dl class="header">
       </dl>
       <emu-alg>
-        1. Let _setterClosure_ be a new Abstract Closure with parameter (_value_) that captures _privateStateName_ and perform the following steps when called:
+        1. Let _setterClosure_ be a new Abstract Closure with parameters (_value_) that captures _privateStateName_ and performs the following steps when called:
           1. Let _o_ be the *this* value.
           1. Perform ? PrivateSet(_privateStateName_, _o_, _value_).
           1. Return *undefined*.
@@ -25340,7 +25344,7 @@
       <h1>
         Runtime Semantics: ClassFieldDefinitionEvaluation (
           _homeObject_: unknown,
-        ): either a normal completion containing a ClassFieldDefinition Record or an abrupt completion
+        ): either a normal completion containing a ClassElementDefinition Record or an abrupt completion
       </h1>
       <dl class="header">
       </dl>
@@ -25354,7 +25358,7 @@
         1. If |Initializer?| is present, then
           1. Let _initializer_ be CreateFieldInitializerFunction(_homeObject_, _name_, |Initializer|).
           1. Append _initializer_ to _initializers_.
-        1. Return ClassElementDefinition { [[Key]]: _name_, [[Kind]]: ~field~, [[Initializers]]: _initializers_, [[Decorators]]: ~empty~ }.
+        1. Return ClassElementDefinition Record { [[Key]]: _name_, [[Kind]]: ~field~, [[Initializers]]: _initializers_, [[Decorators]]: ~empty~ }.
       </emu-alg>
       <emu-grammar>
         FieldDefinition : `accessor` ClassElementName Initializer?
@@ -25373,7 +25377,7 @@
         1. If _name_ is not a Private Name, then
           1. Let _desc_ be the PropertyDescriptor { [[Get]]: _getter_, [[Set]]: _setter_, [[Enumerable]]: *true*, [[Configurable]]: *true* }.
           1. Perform ? DefinePropertyOrThrow(_homeObject_, _name_, _desc_).
-        1. Return ClassElementDefinition { [[Key]]: _name_, [[Kind]]: ~accessor~, [[Get]]: _getter_, [[Set]]: _setter_, [[BackingStorageKey]]: _privateStateName_, [[Initializers]]: _initializers_, [[Decorators]]: ~empty~ }.
+        1. Return ClassElementDefinition Record { [[Key]]: _name_, [[Kind]]: ~accessor~, [[Get]]: _getter_, [[Set]]: _setter_, [[BackingStorageKey]]: _privateStateName_, [[Initializers]]: _initializers_, [[Decorators]]: ~empty~ }.
       </emu-alg>
       <emu-note>
         The function created for _initializer_ is never directly accessible to ECMAScript code.
@@ -25586,7 +25590,7 @@
               1. Return ? _result_.
         1. For each element _e_ of _instanceElements_, do
           1. If _e_.[[Kind]] is ~field~, then
-            1. Let _result_ Completion(ApplyDecoratorsToElementDefinition(_proto_, _e_, _instanceMetadataList_, _instanceExtraInitializers_, *false*)).
+            1. Let _result_ be Completion(ApplyDecoratorsToElementDefinition(_proto_, _e_, _instanceMetadataList_, _instanceExtraInitializers_, *false*)).
             1. If _result_ is an abrupt completion, then
               1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
               1. Return ? _result_.
@@ -25603,7 +25607,7 @@
         1. If _newF_ is an abrupt completion, then
           1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
           1. Return ? _result_.
-        1. _Set _F_ to _newF_.[[Value]].
+        1. Set _F_ to _newF_.[[Value]].
         1. If _classBinding_ is not *undefined*, then
           1. Perform _classScope_.InitializeBinding(_classBinding_, _F_).
         1. For each element _initializer_ of _staticExtraInitializers_, do
