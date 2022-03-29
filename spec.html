@@ -1198,17 +1198,6 @@
             </tr>
             <tr>
               <td>
-                <dfn>@@metadata</dfn>
-              </td>
-              <td>
-                *"Symbol.metadata"*
-              </td>
-              <td>
-                An object valued property that contains the metadata associated with an object. Primarily used to store metadata defined by decorators on classes.
-              </td>
-            </tr>
-            <tr>
-              <td>
                 <dfn>@@replace</dfn>
               </td>
               <td>
@@ -4793,71 +4782,6 @@
             </td>
             <td>
               The initializers of the field or accessor, if any.
-            </td>
-          </tr>
-        </table>
-      </emu-table>
-    </emu-clause>
-
-    <emu-clause id="sec-metadata-record-specification-type">
-      <h1>The Metadata Record Specification Type</h1>
-      <p>The Metadata type is a Record used in the specification of decorator metadata. When defining metadata for a given decorated value, one Metadata Record is created for each user provided unique metadata key.</p>
-      <p>Values of the Metadata type are Record values whose fields are defined as by <emu-xref href="#table-metadata-fields"></emu-xref>. Such values are referred to as <dfn>Metadata Record</dfn>s.</p>
-      <emu-table id="table-metadata-fields" caption="Metadata Record Fields">
-        <table>
-          <tr>
-            <th>
-              Field Name
-            </th>
-            <th>
-              Value
-            </th>
-            <th>
-              Meaning
-            </th>
-          </tr>
-          <tr>
-            <td>
-              [[Constructor]]
-            </td>
-            <td>
-              an ECMAScript language value or ~empty~
-            </td>
-            <td>
-              The metadata associated with a class directly via a class decorator
-            </td>
-          </tr>
-          <tr>
-            <td>
-              [[Key]]
-            </td>
-            <td>
-              a Symbol
-            </td>
-            <td>
-              The key that the metadata is associated with
-            </td>
-          </tr>
-          <tr>
-            <td>
-              [[Private]]
-            </td>
-            <td>
-              a List
-            </td>
-            <td>
-              a List whose values are records with [[Key]] and [[Value]] fields which contain metadata associated with the private class elements of a class
-            </td>
-          </tr>
-          <tr>
-            <td>
-              [[Public]]
-            </td>
-            <td>
-              a List
-            </td>
-            <td>
-              a List whose values are records with [[Key]] and [[Value]] fields which contain metadata associated with the public class elements of a class
             </td>
           </tr>
         </table>
@@ -24458,25 +24382,27 @@
       <h1>
         CreateDecoratorAccessObject (
           _kind_: ~field~, ~method~, ~accessor~, ~getter~, or ~setter~,
-          _name_: a Private Name,
+          _name_: a String or Private Name,
         ): an Object
       </h1>
       <dl class="header">
         <dt>description</dt>
-        <dd>Returns an object with appropriate accessor functions for the private value, for use in a decorator context object.</dd>
+        <dd>Returns an object with appropriate accessor functions for the value, for use in a decorator context object.</dd>
       </dl>
       <emu-alg>
         1. Let _accessObj_ be OrdinaryObjectCreate(%Object.prototype%).
         1. If _kind_ is ~field~, ~method~, ~accessor~, or ~getter~, then
           1. Let _getterClosure_ be a new Abstract Closure with no parameters that captures _name_ and performs the following steps when called:
             1. Let _o_ be the *this* value.
-            1. Return ? PrivateGet(_name_, _o_).
+            1. If _name_ is a String, return ? Get(_o_, _name_).
+            1. Else, return ? PrivateGet(_name_, _o_).
           1. Let _getter_ be CreateBuiltinFunction(_getterClosure_, 0, *""*, &laquo; &raquo;).
           1. Perform ! CreateDataPropertyOrThrow(_accessObj_, *"get"*, _getter_).
         1. If _kind_ is ~field~, ~accessor~, or ~setter~, then
           1. Let _setterClosure_ be a new Abstract Closure with parameters (_value_) that captures _name_ and performs the following steps when called:
             1. Let _o_ be the *this* value.
-            1. Perform ? PrivateSet(_name_, _o_, _value_).
+            1. If _name_ is a String, perform ? PrivateSet(_name_, _o_, _value_).
+            1. Else, perform ? Set(_o_, _name_, _value_, *true*).
             1. Return *undefined*.
           1. Let _setter_ be CreateBuiltinFunction(_setterClosure_, 1, *""*, &laquo; &raquo;).
           1. Perform ! CreateDataPropertyOrThrow(_accessObj_, *"set"*, _setter_).
@@ -24504,129 +24430,11 @@
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id="sec-createsetmetadatafunction" type="abstract operation">
-      <h1>
-        CreateSetMetadataFunction (
-          _kind_: ~constructor~, ~public~, or ~private~,
-          _metadataList_: a List of Metadata Records,
-          _propertyKey_: a String, a Symbol, a Private Name, or ~empty~,
-          _decorationState_: a Record with a field [[Finished]] (a Boolean),
-        ): a function object
-      </h1>
-      <dl class="header">
-        <dt>description</dt>
-        <dd>It returns a function that can be used to define metadata on the passed in _metadataList_ which is associated with the given _kind_ and, if provided, _propertyKey_.</dd>
-      </dl>
-      <emu-alg>
-        1. Let _setMetadataClosure_ be a new Abstract Closure with parameters (_metadataKey_, _value_) that captures _kind_, _metadataList_, _propertyKey_, and _decorationState_ and performs the following steps when called:
-          1. If _decorationState_.[[Finished]] is *true*, throw a *TypeError* exception.
-          1. If Type(_metadataKey_) is not Symbol, throw a *TypeError* exception.
-          1. Let _metadataForKey_ be the element of _metadataList_ whose [[Key]] is the same as _metadataKey_.
-          1. If _metadataForKey_ does not exist, then
-            1. Set _metadataForKey_ to Metadata Record { [[Key]]: _metadataKey_, [[Constructor]]: ~empty~, [[Public]]: &laquo; &raquo;, [[Private]]: &laquo; &raquo; }.
-            1. Append _metadataForKey_ to _metadataList_.
-          1. If _kind_ is ~constructor~, set _metadataForKey_.[[Constructor]] to _value_.
-          1. If _kind_ is ~public~, then
-            1. Let _publicMetadata_ be the element of _metadataForKey_.[[Public]] whose [[Key]] is the same as _propertyKey_.
-            1. If _publicMetadata_ does not exist, then
-              1. Set _publicMetadata_ to the Record { [[Key]]: _propertyKey_, [[Value]]: _value_ }.
-              1. Append _publicMetadata_ to _metadataForKey_.[[Public]].
-            1. Else, set _publicMetadata_.[[Value]] to _value_.
-          1. If _kind_ is ~private~, then
-            1. Let _privateMetadata_ be the element of _metadataForKey_.[[Private]] whose [[Key]] is the same as _propertyKey_.
-            1. If _privateMetadata_ does not exist, then
-              1. Set _privateMetadata_ to the Record { [[Key]]: _propertyKey_, [[Value]]: _value_ }.
-              1. Append _privateMetadata_ to _metadataForKey_.[[Private]].
-            1. Else, set _privateMetadata_.[[Value]] to _value_.
-          1. Return *undefined*.
-        1. Return CreateBuiltinFunction(_setMetadataClosure_, 2, *""*, &laquo; &raquo;).
-      </emu-alg>
-    </emu-clause>
-
-    <emu-clause id="sec-creategetmetadatafunction" type="abstract operation">
-      <h1>
-        CreateGetMetadataFunction (
-          _kind_: ~constructor~, ~public~, or ~private~,
-          _metadataList_: a List of Metadata Records,
-          _propertyKey_: a String, a Symbol, a Private Name, or ~empty~,
-          _decorationState_: a Record with a field [[Finished]] (a Boolean),
-        ): a function object
-      </h1>
-      <dl class="header">
-        <dt>description</dt>
-        <dd>It returns a function that can be used to get metadata on the passed in _metadataList_ which is associated with the given _kind_ and, if provided, _propertyKey_.</dd>
-      </dl>
-      <emu-alg>
-        1. Let _getMetadataClosure_ be a new Abstract Closure with parameters (_metadataKey_) that captures _kind_, _metadataList_, _propertyKey_, and _decorationState_ and performs the following steps when called:
-          1. If _decorationState_.[[Finished]] is *true*, throw a *TypeError* exception.
-          1. If _metadataKey_ is not a Symbol, throw a *TypeError* exception.
-          1. Let _metadataForKey_ be the element of _metadataList_ whose [[Key]] is the same as _metadataKey_.
-          1. If _metadataForKey_ does not exist, return *undefined*.
-          1. If _kind_ is ~constructor~, then
-            1. If _metadataForKey_.[[Constructor]] is ~empty~, return *undefined*.
-            1. Return _metadataForKey_.[[Constructor]].
-          1. If _kind_ is ~public~, then
-            1. Let _publicMetadata_ be the element of _metadataForKey_.[[Public]] whose [[Key]] is the same as _propertyKey_.
-            1. If _publicMetadata_ does not exist, return *undefined*.
-            1. Return _publicMetadata_.[[Value]].
-          1. If _kind_ is ~private~, then
-            1. Let _privateMetadata_ be the element of _metadataForKey_.[[Private]] whose [[Key]] is the same as _propertyKey_.
-            1. If _privateMetadata_ does not exist, return *undefined*.
-            1. Return _privateMetadata_.[[Value]].
-        1. Return CreateBuiltinFunction(_getMetadataClosure_, _length_, *""*, &laquo; &raquo;).
-      </emu-alg>
-    </emu-clause>
-
-    <emu-clause id="sec-convertdecoratormetadatalisttoobject" type="abstract operation">
-      <h1>
-        ConvertDecoratorMetadataListToObject (
-          _targetObject_: an Object,
-          _metadataList_: a List of Metadata Records,
-          _parentMetadataObj_: an Object or *undefined*,
-        ): either a normal completion containing ~unused~, or an abrupt completion
-      </h1>
-      <dl class="header">
-        <dt>description</dt>
-        <dd>It converts a list of metadata records into an object, which it then assigns to the metadata symbol on the target object.</dd>
-      </dl>
-      <emu-alg>
-        1. If _parentMetadataObj_ is *undefined*, let _metadataObj_ be OrdinaryObjectCreate(%Object.prototype%).
-        1. Else, let _metadataObj_ be OrdinaryObjectCreate(_parentMetadataObj_).
-        1. For each element _metadataRecord_ of _metadataList_, do
-          1. Let _key_ be _metadataRecord_.[[Key]].
-          1. If _parentMetadataObj_ is not *undefined*, let _parentMetadataObjForKey_ be ? Get(_parentMetadataObj_, _key_).
-          1. Else, let _parentMetadataObjForKey_ be *undefined*.
-          1. If _parentMetadataObjForKey_ is not *undefined*, let _metadataObjForKey_ be OrdinaryObjectCreate(_parentMetadataObjForKey_).
-          1. Else, let _metadataObjForKey_ be OrdinaryObjectCreate(%Object.prototype%).
-          1. If _metadataRecord_.[[Constructor]] is not ~empty~, perform ! CreateDataPropertyOrThrow(_metadataObjForKey_, *"constructor"*, _metadataRecord_.[[Constructor]]).
-          1. If _metadataRecord_.[[Public]] is not an empty List, then
-            1. Let _parentPublicMetadata_ be ? Get(_parentMetadataObjForKey_, *"public"*).
-            1. If _parentPublicMetadata_ is *undefined*, set _parentPublicMetadata_ to %Object.prototype%.
-            1. Let _publicMetadata_ be OrdinaryObjectCreate(_parentPublicMetadata_).
-            1. For each element _meta_ of _metadataRecord_.[[Public]], do
-              1. Let _key_ be _meta_.[[Key]].
-              1. Let _value_ be _meta_.[[Value]].
-              1. Perform ! CreateDataPropertyOrThrow(_publicMetadata_, _key_, _value_).
-            1. Perform ! CreateDataPropertyOrThrow(_metadataObjForKey_, *"public"*, _publicMetadata_).
-          1. If _metadataRecord_.[[Private]] is not an empty List, then
-            1. Let _parentPrivateMetadata_ be ? Get(_parentMetadataObjForKey_, *"private"*).
-            1. If _parentPrivateMetadata_ is *undefined*, let _privateMetadata_ be a new empty List.
-            1. Else, let _privateMetadata_ be ? CreateListFromArrayLike(_parentPrivateMetadata_).
-            1. For each element _meta_ of _metadataRecord_.[[Private]], do
-              1. Append _meta_.[[Value]] to _privateMetadata_.
-            1. Let _privateMetadataArray_ be CreateArrayFromList(_privateMetadata_).
-            1. Perform ! CreateDataPropertyOrThrow(_metadataObjForKey_, *"private"*, _privateMetadataArray_).
-          1. Perform ! CreateDataPropertyOrThrow(_metadataObj_, _key_, _metadataObjForKey_).
-        1. Perform ! CreateDataPropertyOrThrow(_targetObject_, @@metadata, _metadataObj_).
-      </emu-alg>
-    </emu-clause>
-
     <emu-clause id="sec-createdecoratorcontextobject" type="abstract operation">
       <h1>
         CreateDecoratorContextObject (
           _kind_: ~class~, ~field~, ~method~, ~accessor~, ~getter~, or ~setter~,
-          _name_: a String, a Symbol, or a Private Name,
-          _metadataList_: a List of Metadata Records,
+          _name_: a String, a Symbol, or Private Name,
           _initializers_: a List of function objects,
           _decorationState_: a Record with a field [[Finished]] (a Boolean),
           optional _isStatic_: a Boolean,
@@ -24647,32 +24455,19 @@
           1. Assert: _kind_ is ~class~.
           1. Let _kindStr_ be *"class"*.
         1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"kind"*, _kindStr_).
-        1. If _name_ is a Private Name, then
-          1. Assert: _kind_ is not ~class~.
-          1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"name"*, _name_.[[Description]]).
-          1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"isPrivate"*, *true*).
-          1. Let _access_ be CreateDecoratorAccessObject(_kind_, _name_).
-          1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"access"*, _access_).
-          1. Let _setMetadata_ be CreateSetMetadataFunction(~private~, _metadataList_, ~empty~, _decorationState_).
-          1. Let _getMetadata_ be CreateGetMetadataFunction(~private~, _metadataList_, ~empty~, _decorationState_).
-          1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"setMetadata"*, _setMetadata_).
-          1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"getMetadata"*, _getMetadata_).
-        1. Else,
-          1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"name"*, _name_).
-          1. If _kind_ is ~class~, then
-            1. Let _setMetadata_ be CreateSetMetadataFunction(~constructor~, _metadataList_, ~empty~, _decorationState_).
-            1. Let _getMetadata_ be CreateGetMetadataFunction(~constructor~, _metadataList_, ~empty~, _decorationState_).
-            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"setMetadata"*, _setMetadata_).
-            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"getMetadata"*, _getMetadata_).
+        1. If _kind_ is not ~class~, then
+          1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"access"*, CreateDecoratorAccessObject(_kind_, _name_)).
+          1. If _isStatic_ is present, perform ! CreateDataPropertyOrThrow(_contextObj_, *"isStatic"*, _isStatic_).
+          1. If _name_ is a Private Name, then
+            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"isPrivate"*, *true*).
+            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"name"*, _name_.[[Description]]).
           1. Else,
             1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"isPrivate"*, *false*).
-            1. Let _setMetadata_ be CreateSetMetadataFunction(~public~, _metadataList_, _name_, _decorationState_).
-            1. Let _getMetadata_ be CreateGetMetadataFunction(~public~, _metadataList_, _name_, _decorationState_).
-            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"setMetadata"*, _setMetadata_).
-            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"getMetadata"*, _getMetadata_).
+            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"name"*, _name_).
+        1. Else,
+          1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"name"*, _name_).
         1. Let _addInitializer_ be CreateAddInitializerFunction(_initializers_, _decorationState_).
         1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"addInitializer"*, _addInitializer_).
-        1. If _isStatic_ is present, perform ! CreateDataPropertyOrThrow(_contextObj_, *"isStatic"*, _isStatic_).
         1. Return _contextObj_.
       </emu-alg>
     </emu-clause>
@@ -24682,7 +24477,6 @@
         ApplyDecoratorsToElementDefinition (
           _homeObject_: an Object,
           _elementRecord_: a ClassElementDefinition Record,
-          _metadataList_: a List of Metadata Records,
           _extraInitializers_: a List of function objects,
           _isStatic_: a Boolean,
         ): either a normal completion containing ~unused~, or an abrupt completion
@@ -24698,7 +24492,7 @@
         1. Let _kind_ be _elementRecord_.[[Kind]].
         1. For each element _decorator_ of _decorators_, do
           1. Let _decorationState_ be the Record { [[Finished]]: *false* }.
-          1. Let _context_ be CreateDecoratorContextObject(_kind_, _key_, _metadataList_, _extraInitializers_, _decorationState_, _isStatic_).
+          1. Let _context_ be CreateDecoratorContextObject(_kind_, _key_, _extraInitializers_, _decorationState_, _isStatic_).
           1. Let _value_ be *undefined*.
           1. If _kind_ is ~method~, set _value_ to _elementRecord_.[[Value]].
           1. Else if _kind_ is ~getter~, set _value_ to _elementRecord_.[[Get]].
@@ -24747,7 +24541,6 @@
         ApplyDecoratorsToClassDefinition (
           _classDef_: a function object,
           _decorators_: a List of function objects,
-          _metadataList_: a List of Metadata Records,
           _extraInitializers_: a List of function objects,
         ): either a normal completion containing a function object, or an abrupt completion
       </h1>
@@ -24758,7 +24551,7 @@
       <emu-alg>
         1. For each element _decorator_ of _decorators_, do
           1. Let _decorationState_ be the Record { [[Finished]]: *false* }.
-          1. Let _context_ be CreateDecoratorContextObject(~class~, _className_, _staticMetadataList_, _classExtraInitializers_, _decorationState_).
+          1. Let _context_ be CreateDecoratorContextObject(~class~, _className_, _classExtraInitializers_, _decorationState_).
           1. Let _newDef_ be ? Call(_decorator_, *undefined*, &laquo; _classDef_, _context_ &raquo;).
           1. Set _decorationState_.[[Finished]] to *true*.
           1. If IsCallable(_newDef_) is *true*, then
@@ -25262,16 +25055,15 @@
       <h1>
         ApplyDecoratorsAndDefineMethod (
           _homeObject_: an Object,
-          _methodDefinition_: a ClassElementDefinition Record,
-          _metadataList_: a List of Metadata Records,
-          _extraInitializers_: a List of function objects,
+          _methodDefinition_: a ClassElementDefinition record,
+          _extraInitializers_: A List of function objects,
           _isStatic_: a Boolean,
         ): either a normal completion containing ~unused~, or an abrupt completion
       </h1>
       <dl class="header">
       </dl>
       <emu-alg>
-        1. Perform ? ApplyDecoratorsToElementDefinition(_homeObject_, _methodDefinitinn_, _metadataList_, _extraInitializers_, _isStatic_).
+        1. Perform ? ApplyDecoratorsToElementDefinition(_homeObject_, _methodDefinition_, _extraInitializers_, _isStatic_).
         1. Perform ? DefineMethodProperty(_homeObject_, _methodDefinition_, _isStatic_).
         1. Return ~unused~.
       </emu-alg>
@@ -25424,8 +25216,6 @@
       <h1>
         Runtime Semantics: ClassElementEvaluation (
           _object_: unknown,
-          _metadataList_: a List of Metadata Records,
-          _extraInitializers_: a List of ECMAScript function objects,
         ): either a normal completion containing either a ClassElementDefinition Record, a ClassStaticBlockDefinition Record, or ~unused~, or an abrupt completion
       </h1>
       <dl class="header">
@@ -25517,8 +25307,6 @@
             1. If Type(_protoParent_) is neither Object nor Null, throw a *TypeError* exception.
             1. Let _constructorParent_ be _superclass_.
         1. Let _proto_ be OrdinaryObjectCreate(_protoParent_).
-        1. Let _parentStaticMetadata_ be ? Get(_constructorParent_, @@metadata).
-        1. Let _parentInstanceMetadata_ be ? Get(_protoParent_, @@metadata).
         1. If |ClassBody?| is not present, let _constructor_ be ~empty~.
         1. Else, let _constructor_ be ConstructorMethod of |ClassBody|.
         1. Set the running execution context's LexicalEnvironment to _classEnv_.
@@ -25566,44 +25354,38 @@
             1. Assert: _element_ is a ClassStaticBlockDefinition Record.
             1. Append _element_ to _staticElements_.
         1. Set the running execution context's LexicalEnvironment to _env_.
-        1. Let _instanceMetadataList_ be a new empty List.
-        1. Let _staticMetadataList_ be a new empty List.
         1. Let _instanceExtraInitializers_ be a new empty List.
         1. Let _staticExtraInitializers_ be a new empty List.
         1. For each element _e_ of _staticElements_, do
           1. If _e_.[[Kind]] is not ~field~, then
-            1. Let _result_ be Completion(ApplyDecoratorsAndDefineMethod(_F_, _e_, _staticMetadataList_, _staticExtraInitializers_, *true*)).
+            1. Let _result_ be Completion(ApplyDecoratorsAndDefineMethod(_F_, _e_, _staticExtraInitializers_, *true*)).
             1. If _result_ is an abrupt completion, then
               1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
               1. Return ? _result_.
         1. For each element _e_ of _instanceElements_, do
           1. If _e_.[[Kind]] is not ~field~, then
-            1. Let _result_ be Completion(ApplyDecoratorsAndDefineMethod(_proto_, _e_, _instanceMetadataList_, _instanceExtraInitializers_, *true*)).
+            1. Let _result_ be Completion(ApplyDecoratorsAndDefineMethod(_proto_, _e_, _instanceExtraInitializers_, *true*)).
             1. If _result_ is an abrupt completion, then
               1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
               1. Return ? _result_.
         1. For each element _e_ of _staticElements_, do
           1. If _e_.[[Kind]] is ~field~, then
-            1. Let _result_ be Completion(ApplyDecoratorsToElementDefinition(_F_, _e_, _staticMetadataList_, _staticExtraInitializers_, *true*)).
+            1. Let _result_ be Completion(ApplyDecoratorsToElementDefinition(_F_, _e_, _staticExtraInitializers_, *true*)).
             1. If _result_ is an abrupt completion, then
               1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
               1. Return ? _result_.
         1. For each element _e_ of _instanceElements_, do
           1. If _e_.[[Kind]] is ~field~, then
-            1. Let _result_ be Completion(ApplyDecoratorsToElementDefinition(_proto_, _e_, _instanceMetadataList_, _instanceExtraInitializers_, *false*)).
+            1. Let _result_ be Completion(ApplyDecoratorsToElementDefinition(_proto_, _e_, _instanceExtraInitializers_, *false*)).
             1. If _result_ is an abrupt completion, then
               1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
               1. Return ? _result_.
-        1. Let _protoMetaResult_ be Completion(ConvertDecoratorMetadataListToObject(_proto_, _instanceMetadataList_, _parentInstanceMetadata_)).
-        1. If _protoMetaResult_ is an abrupt completion, then
-          1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
-          1. Return ? _protoMetaResult_.
         1. Set _F_.[[Elements]] to _instanceElements_.
         1. Set _F_.[[Initializers]] to _instanceExtraInitializers_.
         1. For each PrivateElement _method_ of _staticPrivateMethods_, do
           1. Perform ! PrivateMethodOrAccessorAdd(_F_, _method_).
         1. Let _classExtraInitializers_ be a new empty List.
-        1. Let _newF_ be Completion(ApplyDecoratorsToClassDefinition(_F_, _decorators_, _staticMetadataList_, _classExtraInitializers_)).
+        1. Let _newF_ be Completion(ApplyDecoratorsToClassDefinition(_F_, _decorators_, _classExtraInitializers_)).
         1. If _newF_ is an abrupt completion, then
           1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
           1. Return ? _result_.
@@ -25623,10 +25405,6 @@
           1. If _result_ is an abrupt completion, then
             1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
             1. Return ? _result_.
-        1. Let _staticMetaResult_ be Completion(ConvertDecoratorMetadataListToObject(_F_, _instanceMetadataList_, _parentInstanceMetadata_)).
-        1. If _staticMetaResult_ is an abrupt completion, then
-          1. Set the running execution context's PrivateEnvironment to _outerPrivateEnvironment_.
-          1. Return ? _staticMetaResult_.
         1. For each element _initializer_ of _classExtraInitializers_, do
           1. Let _result_ be Completion(Call(_initializer_, _F_)).
           1. If _result_ is an abrupt completion, then
