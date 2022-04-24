@@ -24328,6 +24328,7 @@
 
       DecoratorMemberExpression[Yield, Await] :
         IdentifierReference[?Yield, ?Await]
+        PrivateIdentifier
         DecoratorMemberExpression[?Yield, ?Await] `.` IdentifierName
 
       DecoratorParenthesizedExpression[Yield, Await] :
@@ -24335,7 +24336,6 @@
 
       DecoratorCallExpression[Yield, Await] :
         DecoratorMemberExpression[?Yield, ?Await] Arguments[?Yield, ?Await]
-        DecoratorParenthesizedExpression[?Yield, ?Await] Arguments[?Yield, ?Await]
     </emu-grammar>
 
     <emu-clause id="sec-decoratorevaluation" type="sdo">
