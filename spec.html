@@ -24457,12 +24457,12 @@
         1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"kind"*, _kindStr_).
         1. If _kind_ is not ~class~, then
           1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"access"*, CreateDecoratorAccessObject(_kind_, _name_)).
-          1. If _isStatic_ is present, perform ! CreateDataPropertyOrThrow(_contextObj_, *"isStatic"*, _isStatic_).
+          1. If _isStatic_ is present, perform ! CreateDataPropertyOrThrow(_contextObj_, *"static"*, _isStatic_).
           1. If _name_ is a Private Name, then
-            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"isPrivate"*, *true*).
+            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"private"*, *true*).
             1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"name"*, _name_.[[Description]]).
           1. Else,
-            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"isPrivate"*, *false*).
+            1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"private"*, *false*).
             1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"name"*, _name_).
         1. Else,
           1. Perform ! CreateDataPropertyOrThrow(_contextObj_, *"name"*, _name_).
