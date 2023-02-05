@@ -24382,7 +24382,7 @@
       <h1>
         CreateDecoratorAccessObject (
           _kind_: ~field~, ~method~, ~accessor~, ~getter~, or ~setter~,
-          _name_: a String or Private Name,
+          _name_: either a String, a Symbol, or a Private Name,
         ): an Object
       </h1>
       <dl class="header">
@@ -24392,20 +24392,27 @@
       <emu-alg>
         1. Let _accessObj_ be OrdinaryObjectCreate(%Object.prototype%).
         1. If _kind_ is ~field~, ~method~, ~accessor~, or ~getter~, then
-          1. Let _getterClosure_ be a new Abstract Closure with no parameters that captures _name_ and performs the following steps when called:
-            1. Let _o_ be the *this* value.
-            1. If _name_ is a String, return ? Get(_o_, _name_).
-            1. Else, return ? PrivateGet(_name_, _o_).
-          1. Let _getter_ be CreateBuiltinFunction(_getterClosure_, 0, *""*, &laquo; &raquo;).
+          1. Let _getterClosure_ be a new Abstract Closure with parameter (_obj_) that captures _name_ and performs the following steps when called:
+            1. If _obj_ is not an Object, throw a *TypeError* exception.
+            1. If _name_ is either a String or a Symbol, return ? Get(_obj_, _name_).
+            1. Else, return ? PrivateGet(_name_, _obj_).
+          1. Let _getter_ be CreateBuiltinFunction(_getterClosure_, 1, *""*, &laquo; &raquo;).
           1. Perform ! CreateDataPropertyOrThrow(_accessObj_, *"get"*, _getter_).
         1. If _kind_ is ~field~, ~accessor~, or ~setter~, then
-          1. Let _setterClosure_ be a new Abstract Closure with parameters (_value_) that captures _name_ and performs the following steps when called:
-            1. Let _o_ be the *this* value.
-            1. If _name_ is a String, perform ? PrivateSet(_name_, _o_, _value_).
-            1. Else, perform ? Set(_o_, _name_, _value_, *true*).
+          1. Let _setterClosure_ be a new Abstract Closure with parameters (_obj_, _value_) that captures _name_ and performs the following steps when called:
+            1. If _obj_ is not an Object, throw a *TypeError* exception.
+            1. If _name_ is either a String or a Symbol, perform ? PrivateSet(_name_, _obj_, _value_).
+            1. Else, perform ? Set(_obj_, _name_, _value_, *true*).
             1. Return *undefined*.
-          1. Let _setter_ be CreateBuiltinFunction(_setterClosure_, 1, *""*, &laquo; &raquo;).
+          1. Let _setter_ be CreateBuiltinFunction(_setterClosure_, 2, *""*, &laquo; &raquo;).
           1. Perform ! CreateDataPropertyOrThrow(_accessObj_, *"set"*, _setter_).
+        1. Let _hasClosure_ be a new Abstract Closure with parameter (_obj_) that captures _name_ and performs the following steps when called:
+          1. If _obj_ is not an Object, throw a *TypeError* exception.
+          1. If _name_ is either a String or a Symbol, return ? HasProperty(_obj_, _name_).
+          1. If PrivateElementFind(_obj_, _name_) is not ~empty~, return *true*.
+          1. Return *false*.
+        1. Let _has_ be CreateBuiltinFunction(_hasClosure_, 1, *""*, &laquo; &raquo;).
+        1. Perform ! CreateDataPropertyOrThrow(_accessObj_, *"has"*, _has_).
         1. Return _accessObj_.
       </emu-alg>
     </emu-clause>
@@ -25416,15 +25423,16 @@
     </emu-clause>
 
     <emu-clause id="sec-runtime-semantics-bindingclassdeclarationevaluation" type="sdo">
-      <h1>Runtime Semantics: BindingClassDeclarationEvaluation ( ): either a normal completion containing a function object or an abrupt completion</h1>
+      <h1>
+        Runtime Semantics: BindingClassDeclarationEvaluation (
+          _decorators_: a List,
+        ): either a normal completion containing a function object or an abrupt completion
+      </h1>
       <dl class="header">
       </dl>
       <emu-grammar>ClassDeclaration : DecoratorList? `class` BindingIdentifier ClassTail</emu-grammar>
       <emu-alg>
         1. Let _className_ be StringValue of |BindingIdentifier|.
-        1. If |DecoratorList?| is present, then
-          1. Let _decorators_ be ? DecoratorListEvaluation of |DecoratorList|.
-        1. Else, let _decorators_ be a new empty List.
         1. Let _value_ be ? ClassDefinitionEvaluation of |ClassTail| with arguments _className_, _className_, and _decorators_.
         1. Set _value_.[[SourceText]] to the source text matched by |ClassDeclaration|.
         1. Let _env_ be the running execution context's LexicalEnvironment.
@@ -25433,9 +25441,6 @@
       </emu-alg>
       <emu-grammar>ClassDeclaration : DecoratorList? `class` ClassTail</emu-grammar>
       <emu-alg>
-        1. If |DecoratorList?| is present, then
-          1. Let _decorators_ be ? DecoratorListEvaluation of |DecoratorList|.
-        1. Else, let _decorators_ be a new empty List.
         1. Let _value_ be ? ClassDefinitionEvaluation of |ClassTail| with arguments *undefined*, *"default"*, and _decorators_.
         1. Set _value_.[[SourceText]] to the source text matched by |ClassDeclaration|.
         1. Return _value_.
@@ -25449,7 +25454,10 @@
       <h1>Runtime Semantics: Evaluation</h1>
       <emu-grammar>ClassDeclaration : DecoratorList? `class` BindingIdentifier ClassTail</emu-grammar>
       <emu-alg>
-        1. Perform ? BindingClassDeclarationEvaluation of this |ClassDeclaration|.
+        1. If |DecoratorList?| is present, then
+          1. Let _decorators_ be ? DecoratorListEvaluation of |DecoratorList|.
+        1. Else, let _decorators_ be a new empty List.
+        1. Perform ? BindingClassDeclarationEvaluation of this |ClassDeclaration| with argument _decorators_.
         1. Return ~empty~.
       </emu-alg>
       <emu-note>
@@ -28653,9 +28661,9 @@
           `export` ExportFromClause FromClause `;`
           `export` NamedExports `;`
           `export` VariableStatement[~Yield, +Await]
-          `export` Declaration[~Yield, +Await]
+          DecoratorList[~Yield, +Await]? `export` Declaration[~Yield, +Await]
           `export` `default` HoistableDeclaration[~Yield, +Await, +Default]
-          `export` `default` ClassDeclaration[~Yield, +Await, +Default]
+          DecoratorList[~Yield, +Await]? `export` `default` ClassDeclaration[~Yield, +Await, +Default]
           `export` `default` [lookahead &notin; { `function`, `async` [no LineTerminator here] `function`, `class`, `@` }] AssignmentExpression[+In, ~Yield, +Await] `;`
 
         ExportFromClause :
@@ -28691,6 +28699,21 @@
         <emu-note>
           <p>The above rule means that each ReferencedBindings of |NamedExports| is treated as an |IdentifierReference|.</p>
         </emu-note>
+        <emu-grammar>ExportDeclaration : DecoratorList? `export` Declaration</emu-grammar>
+        <ul>
+          <li>
+            It is a Syntax Error if |DecoratorList| is present and |Declaration| is not |ClassDeclaration|.
+          </li>
+          <li>
+            It is a Syntax Error if |DecoratorList| is present and |Declaration| is a |ClassDeclaration| and the |DecoratorList| of that |ClassDeclaration| is present.
+          </li>
+        </ul>
+        <emu-grammar>ExportDeclaration : DecoratorList? `export` `default` ClassDeclaration</emu-grammar>
+        <ul>
+          <li>
+            It is a Syntax Error if |DecoratorList| is present and the |DecoratorList| of |ClassDeclaration| is present.
+          </li>
+        </ul>
       </emu-clause>
 
       <emu-clause id="sec-static-semantics-exportedbindings" oldids="sec-module-semantics-static-semantics-exportedbindings,sec-exports-static-semantics-exportedbindings" type="sdo">
@@ -29005,17 +29028,26 @@
         <emu-alg>
           1. Return the result of evaluating |VariableStatement|.
         </emu-alg>
-        <emu-grammar>ExportDeclaration : `export` Declaration</emu-grammar>
+        <emu-grammar>ExportDeclaration : DecoratorList? `export` Declaration</emu-grammar>
         <emu-alg>
-          1. Return the result of evaluating |Declaration|.
+          1. If |DecoratorList?| is present, then
+            1. Assert: |Declaration| is a |ClassDeclaration|.
+            1. Let _decorators_ be ? DecoratorListEvaluation of |DecoratorList|.
+            1. Perform ? BindingClassDeclarationEvaluation of |ClassDeclaration| with argument _decorators_.
+            1. Return ~empty~.
+          1. Else,
+            1. Return the result of evaluating |Declaration|.
         </emu-alg>
         <emu-grammar>ExportDeclaration : `export` `default` HoistableDeclaration</emu-grammar>
         <emu-alg>
           1. Return the result of evaluating |HoistableDeclaration|.
         </emu-alg>
-        <emu-grammar>ExportDeclaration : `export` `default` ClassDeclaration</emu-grammar>
+        <emu-grammar>ExportDeclaration : DecoratorList? `export` `default` ClassDeclaration</emu-grammar>
         <emu-alg>
-          1. Let _value_ be ? BindingClassDeclarationEvaluation of |ClassDeclaration|.
+          1. If |DecoratorList?| is present, then
+            1. Let _decorators_ be ? DecoratorListEvaluation of |DecoratorList|.
+          1. Else, let _decorators_ be a new empty List.
+          1. Let _value_ be ? BindingClassDeclarationEvaluation of |ClassDeclaration| with argument _decorators_.
           1. Let _className_ be the sole element of BoundNames of |ClassDeclaration|.
           1. If _className_ is *"\*default\*"*, then
             1. Let _env_ be the running execution context's LexicalEnvironment.
