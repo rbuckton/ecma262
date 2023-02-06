@@ -24401,8 +24401,8 @@
         1. If _kind_ is ~field~, ~accessor~, or ~setter~, then
           1. Let _setterClosure_ be a new Abstract Closure with parameters (_obj_, _value_) that captures _name_ and performs the following steps when called:
             1. If _obj_ is not an Object, throw a *TypeError* exception.
-            1. If _name_ is either a String or a Symbol, perform ? PrivateSet(_name_, _obj_, _value_).
-            1. Else, perform ? Set(_obj_, _name_, _value_, *true*).
+            1. If _name_ is either a String or a Symbol, perform ? Set(_obj_, _name_, _value_, *true*).
+            1. Else, perform ? PrivateSet(_name_, _obj_, _value_).
             1. Return *undefined*.
           1. Let _setter_ be CreateBuiltinFunction(_setterClosure_, 2, *""*, &laquo; &raquo;).
           1. Perform ! CreateDataPropertyOrThrow(_accessObj_, *"set"*, _setter_).
