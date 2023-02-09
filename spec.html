@@ -29030,10 +29030,10 @@
         </emu-alg>
         <emu-grammar>ExportDeclaration : DecoratorList? `export` Declaration</emu-grammar>
         <emu-alg>
-          1. If |DecoratorList?| is present, then
-            1. Assert: |Declaration| is a |ClassDeclaration|.
+          1. If |DecoratorList| is present, then
+            1. Assert: |Declaration| is a |ClassDeclaration| and the |DecoratorList| of that |ClassDeclaration| is not present.
             1. Let _decorators_ be ? DecoratorListEvaluation of |DecoratorList|.
-            1. Perform ? BindingClassDeclarationEvaluation of |ClassDeclaration| with argument _decorators_.
+            1. Perform ? BindingClassDeclarationEvaluation of |Declaration| with argument _decorators_.
             1. Return ~empty~.
           1. Else,
             1. Return the result of evaluating |Declaration|.
@@ -29044,7 +29044,7 @@
         </emu-alg>
         <emu-grammar>ExportDeclaration : DecoratorList? `export` `default` ClassDeclaration</emu-grammar>
         <emu-alg>
-          1. If |DecoratorList?| is present, then
+          1. If |DecoratorList| is present, then
             1. Let _decorators_ be ? DecoratorListEvaluation of |DecoratorList|.
           1. Else, let _decorators_ be a new empty List.
           1. Let _value_ be ? BindingClassDeclarationEvaluation of |ClassDeclaration| with argument _decorators_.
