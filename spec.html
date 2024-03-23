@@ -7280,7 +7280,7 @@
               [[ResourceValue]]
             </td>
             <td>
-              an Object or *undefined*.
+              an Object or *undefined*
             </td>
             <td>
               The value to be disposed.
@@ -46971,7 +46971,7 @@ THH:mm:ss.sss
                 `@@asyncDispose`
               </td>
               <td>
-                A function that returns a promise.
+                a function that returns a promise
               </td>
               <td>
                 <p>Invoking this method notifies the <em>AsyncDisposable</em> object that the caller does not intend to continue to use this object. This method should perform any necessary logic to perform explicit clean-up of the resource including, but not limited to, file system handles, streams, host objects, etc. When an exception is thrown from this method, it typically means that the resource could not be explicitly freed. An <em>AsyncDisposable</em> object is not considered "disposed" until the resulting Promise has been fulfilled.</p>
