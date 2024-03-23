@@ -46941,9 +46941,9 @@ THH:mm:ss.sss
                 a function object
               </td>
               <td>
-                <p>Invoking this method notifies the <em>Disposable</em> object that the caller does not intend to continue to use this object. This method should perform any necessary logic to perform explicit clean-up of the resource including, but not limited to, file system handles, streams, host objects, etc. When an exception is thrown from this method, it typically means that the resource could not be explicitly freed.</p>
+                <p>Invoking this method notifies the <i>Disposable</i> object that the caller does not intend to continue to use this object. This method should perform any necessary logic to perform explicit clean-up of the resource including, but not limited to, file system handles, streams, host objects, etc. When an exception is thrown from this method, it typically means that the resource could not be explicitly freed.</p>
                 <p>If called more than once on the same object, the function should not throw an exception. However, this requirement is not enforced.</p>
-                <p>When using a <em>Disposable</em> object, it is good practice to create the instance with a `using` declaration, as the resource will be automatically disposed when the |Block| or |Module| immediately containing the declaration has been evaluated.</p>
+                <p>When using a <i>Disposable</i> object, it is good practice to create the instance with a `using` declaration, as the resource will be automatically disposed when the |Block| or |Module| immediately containing the declaration has been evaluated.</p>
               </td>
             </tr>
           </table>
@@ -46951,9 +46951,9 @@ THH:mm:ss.sss
       </emu-clause>
 
       <emu-clause id="sec-asyncdisposable-interface">
-        <h1>The <em>AsyncDisposable</em> Interface</h1>
-        <p>The <em>AsyncDisposable</em> interface includes the property described in <emu-xref href="#table-asyncdisposable-interface-required-properties"></emu-xref>:</p>
-        <emu-table id="table-asyncdisposable-interface-required-properties" caption="<em>AsyncDisposable</em> Interface Required Properties">
+        <h1>The <i>AsyncDisposable</i> Interface</h1>
+        <p>The <i>AsyncDisposable</i> interface includes the property described in <emu-xref href="#table-asyncdisposable-interface-required-properties"></emu-xref>:</p>
+        <emu-table id="table-asyncdisposable-interface-required-properties" caption="<i>AsyncDisposable</i> Interface Required Properties">
           <table>
             <tr>
               <th>
@@ -46974,9 +46974,9 @@ THH:mm:ss.sss
                 a function that returns a promise
               </td>
               <td>
-                <p>Invoking this method notifies the <em>AsyncDisposable</em> object that the caller does not intend to continue to use this object. This method should perform any necessary logic to perform explicit clean-up of the resource including, but not limited to, file system handles, streams, host objects, etc. When an exception is thrown from this method, it typically means that the resource could not be explicitly freed. An <em>AsyncDisposable</em> object is not considered "disposed" until the resulting Promise has been fulfilled.</p>
+                <p>Invoking this method notifies the <i>AsyncDisposable</i> object that the caller does not intend to continue to use this object. This method should perform any necessary logic to perform explicit clean-up of the resource including, but not limited to, file system handles, streams, host objects, etc. When an exception is thrown from this method, it typically means that the resource could not be explicitly freed. An <i>AsyncDisposable</i> object is not considered "disposed" until the resulting Promise has been fulfilled.</p>
                 <p>If called more than once on the same object, the function should not throw an exception. However, this requirement is not enforced.</p>
-                <p>When using an <em>AsyncDisposable</em> object, it is good practice to create the instance with a `await using` declaration, as the resource will be automatically disposed when the |Block| or |Module| immediately containing the declaration has been evaluated.</p>
+                <p>When using an <i>AsyncDisposable</i> object, it is good practice to create the instance with a `await using` declaration, as the resource will be automatically disposed when the |Block| or |Module| immediately containing the declaration has been evaluated.</p>
               </td>
             </tr>
           </table>
