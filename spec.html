@@ -7339,7 +7339,7 @@
           1. NOTE: When _V_ is either *null* or *undefined* and _hint_ is ~async-dispose~, we record that the resource was evaluated to ensure we will still perform an Await when resources are later disposed.
           1. Let _resource_ be ? CreateDisposableResource(_V_, _hint_).
         1. Else,
-          1. Assert: V is *undefined*.
+          1. Assert: _V_ is *undefined*.
           1. Let _resource_ be ? CreateDisposableResource(*undefined*, _hint_, _method_).
         1. Append _resource_ to _disposeCapability_.[[DisposableResourceStack]].
         1. Return ~unused~.
@@ -25792,7 +25792,7 @@
         UnaryExpression : CoverAwaitExpressionAndAwaitUsingDeclarationHead
       </emu-grammar>
       <emu-alg>
-        1. Let _expr_ be the |AwaitExpression| that is covered by CoverAwaitExpressionAndAwaitUsingDeclarationHead.
+        1. Let _expr_ be the |AwaitExpression| that is covered by |CoverAwaitExpressionAndAwaitUsingDeclarationHead|.
         1. Return ? Evaluation of _expr_.
       </emu-alg>
       <emu-grammar>
@@ -47215,7 +47215,7 @@ THH:mm:ss.sss
       <h1>Properties of the AsyncDisposableStack Constructor</h1>
       <p>The AsyncDisposableStack constructor:</p>
       <ul>
-        <li>Has a [[Prototype]] internal slot whose value is %Function.prototype%.</li>
+        <li>has a [[Prototype]] internal slot whose value is %Function.prototype%.</li>
         <li>has the following properties:</li>
       </ul>
 
