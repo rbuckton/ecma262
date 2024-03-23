@@ -46715,7 +46715,7 @@ THH:mm:ss.sss
 
       <emu-clause id="sec-%asynciteratorprototype%-@@asyncdispose">
         <h1>%AsyncIteratorPrototype% [ @@asyncDispose ] ( )</h1>
-        <p>The following steps are taken:</p>
+        <p>This function performs the following steps when called:</p>
         <emu-alg>
           1. Let _O_ be the *this* value.
           1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
@@ -47200,7 +47200,7 @@ THH:mm:ss.sss
 
       <emu-clause id="sec-asyncdisposablestack">
         <h1>AsyncDisposableStack ( )</h1>
-        <p>When the `AsyncDisposableStack` function is called, the following steps are taken:</p>
+        <p>This function performs the following steps when called:</p>
         <emu-alg>
           1. If NewTarget is *undefined*, throw a *TypeError* exception.
           1. Let _asyncDisposableStack_ be ? OrdinaryCreateFromConstructor(NewTarget, *"%AsyncDisposableStack.prototype%"*, « [[AsyncDisposableState]], [[DisposeCapability]] »).
@@ -47238,7 +47238,7 @@ THH:mm:ss.sss
 
       <emu-clause id="sec-asyncdisposablestack.prototype.adopt">
         <h1>AsyncDisposableStack.prototype.adopt ( _value_, _onDisposeAsync_ )</h1>
-        <p>When the `adopt` function is called with two arguments, the following steps are taken:</p>
+        <p>This method performs the following steps when called:</p>
         <emu-alg>
           1. Let _asyncDisposableStack_ be the *this* value.
           1. Perform ? RequireInternalSlot(_asyncDisposableStack_, [[AsyncDisposableState]]).
@@ -47254,7 +47254,7 @@ THH:mm:ss.sss
 
       <emu-clause id="sec-asyncdisposablestack.prototype.defer">
         <h1>AsyncDisposableStack.prototype.defer ( _onDisposeAsync_ )</h1>
-        <p>When the `defer` function is called with one argument, the following steps are taken:</p>
+        <p>This method performs the following steps when called:</p>
         <emu-alg>
           1. Let _asyncDisposableStack_ be the *this* value.
           1. Perform ? RequireInternalSlot(_asyncDisposableStack_, [[AsyncDisposableState]]).
@@ -47267,7 +47267,7 @@ THH:mm:ss.sss
 
       <emu-clause id="sec-asyncdisposablestack.prototype.disposeAsync">
         <h1>AsyncDisposableStack.prototype.disposeAsync ( )</h1>
-        <p>When the `disposeAsync` method is called, the following steps are taken:</p>
+        <p>This method performs the following steps when called:</p>
         <emu-alg>
           1. Let _asyncDisposableStack_ be the *this* value.
           1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
@@ -47287,7 +47287,7 @@ THH:mm:ss.sss
 
       <emu-clause id="sec-get-asyncdisposablestack.prototype.disposed">
         <h1>get AsyncDisposableStack.prototype.disposed</h1>
-        <p>`AsyncDisposableStack.prototype.disposed` is an accessor property whose set accessor function is *undefined*. Its get accessor function performs the following steps:</p>
+        <p>`AsyncDisposableStack.prototype.disposed` is an accessor property whose set accessor function is *undefined*. Its get accessor function performs the following steps when called:</p>
         <emu-alg>
           1. Let _asyncDisposableStack_ be the *this* value.
           1. Perform ? RequireInternalSlot(_asyncDisposableStack_, [[AsyncDisposableState]]).
@@ -47298,7 +47298,7 @@ THH:mm:ss.sss
 
       <emu-clause id="sec-asyncdisposablestack.prototype.move">
         <h1>AsyncDisposableStack.prototype.move ( )</h1>
-        <p>When the `move` function is called, the following steps are taken:</p>
+        <p>This method performs the following steps when called:</p>
         <emu-alg>
           1. Let _asyncDisposableStack_ be the *this* value.
           1. Perform ? RequireInternalSlot(_asyncDisposableStack_, [[AsyncDisposableState]]).
@@ -47314,7 +47314,7 @@ THH:mm:ss.sss
 
       <emu-clause id="sec-asyncdisposablestack.prototype.use">
         <h1>AsyncDisposableStack.prototype.use ( _value_ )</h1>
-        <p>When the `use` function is called with one argument, the following steps are taken:</p>
+        <p>This method performs the following steps when called:</p>
         <emu-alg>
           1. Let _asyncDisposableStack_ be the *this* value.
           1. Perform ? RequireInternalSlot(_asyncDisposableStack_, [[AsyncDisposableState]]).
