@@ -7803,21 +7803,19 @@
       <h1>Static Semantics: IsUsingDeclaration ( ): a Boolean</h1>
       <dl class="header">
       </dl>
-      <emu-grammar>LexicalDeclaration : LetOrConst BindingList `;`</emu-grammar>
-      <emu-alg>
-        1. Return *false*.
-      </emu-alg>
       <emu-grammar>
-        UsingDeclaration :
-          `using` BindingList `;`
+        LeftHandSideExpression :
+          NewExpression
+          CallExpression
+          OptionalExpression
 
-        AwaitUsingDeclaration :
-          CoverAwaitExpressionAndAwaitUsingDeclarationHead BindingList `;`
+        ForDeclaration :
+          LetOrConst ForBinding
+
+        ForBinding :
+          BindingIdentifier
+          BindingPattern
       </emu-grammar>
-      <emu-alg>
-        1. Return *true*.
-      </emu-alg>
-      <emu-grammar>ForDeclaration : LetOrConst ForBinding</emu-grammar>
       <emu-alg>
         1. Return *false*.
       </emu-alg>
@@ -7829,109 +7827,32 @@
       <emu-alg>
         1. Return *true*.
       </emu-alg>
-      <emu-grammar>
-        FunctionDeclaration :
-          `function` BindingIdentifier `(` FormalParameters `)` `{` FunctionBody `}`
-          `function` `(` FormalParameters `)` `{` FunctionBody `}`
-
-        GeneratorDeclaration :
-          `function` `*` BindingIdentifier `(` FormalParameters `)` `{` GeneratorBody `}`
-          `function` `*` `(` FormalParameters `)` `{` GeneratorBody `}`
-
-        AsyncGeneratorDeclaration :
-          `async` `function` `*` BindingIdentifier `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
-          `async` `function` `*` `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
-
-        AsyncFunctionDeclaration :
-          `async` `function` BindingIdentifier `(` FormalParameters `)` `{` AsyncFunctionBody `}`
-          `async` `function` `(` FormalParameters `)` `{` AsyncFunctionBody `}`
-      </emu-grammar>
-      <emu-alg>
-        1. Return *false*.
-      </emu-alg>
-      <emu-grammar>
-        ClassDeclaration :
-          `class` BindingIdentifier ClassTail
-          `class` ClassTail
-      </emu-grammar>
-      <emu-alg>
-        1. Return *false*.
-      </emu-alg>
-      <emu-grammar>
-        ExportDeclaration :
-          `export` ExportFromClause FromClause `;`
-          `export` NamedExports `;`
-          `export` `default` AssignmentExpression `;`
-      </emu-grammar>
-      <emu-alg>
-        1. Return *false*.
-      </emu-alg>
     </emu-clause>
 
     <emu-clause id="sec-static-semantics-isawaitusingdeclaration" type="sdo">
       <h1>Static Semantics: IsAwaitUsingDeclaration ( ): a Boolean</h1>
       <dl class="header">
       </dl>
-      <emu-grammar>LexicalDeclaration : LetOrConst BindingList `;`</emu-grammar>
-      <emu-alg>
-        1. Return *false*.
-      </emu-alg>
-      <emu-grammar>UsingDeclaration : `using` BindingList `;`</emu-grammar>
-      <emu-alg>
-        1. Return *false*.
-      </emu-alg>
-      <emu-grammar>AwaitUsingDeclaration : CoverAwaitExpressionAndAwaitUsingDeclarationHead BindingList `;`</emu-grammar>
-      <emu-alg>
-        1. Return *true*.
-      </emu-alg>
-      <emu-grammar>ForDeclaration : LetOrConst ForBinding</emu-grammar>
-      <emu-alg>
-        1. Return *false*.
-      </emu-alg>
-      <emu-grammar>ForDeclaration : `using` ForBinding</emu-grammar>
+      <emu-grammar>
+        LeftHandSideExpression :
+          NewExpression
+          CallExpression
+          OptionalExpression
+
+        ForDeclaration :
+          LetOrConst ForBinding
+          `using` ForBinding
+
+        ForBinding :
+          BindingIdentifier
+          BindingPattern
+      </emu-grammar>
       <emu-alg>
         1. Return *false*.
       </emu-alg>
       <emu-grammar>ForDeclaration : `await` `using` ForBinding</emu-grammar>
       <emu-alg>
         1. Return *true*.
-      </emu-alg>
-      <emu-grammar>
-        FunctionDeclaration :
-          `function` BindingIdentifier `(` FormalParameters `)` `{` FunctionBody `}`
-          `function` `(` FormalParameters `)` `{` FunctionBody `}`
-
-        GeneratorDeclaration :
-          `function` `*` BindingIdentifier `(` FormalParameters `)` `{` GeneratorBody `}`
-          `function` `*` `(` FormalParameters `)` `{` GeneratorBody `}`
-
-        AsyncGeneratorDeclaration :
-          `async` `function` `*` BindingIdentifier `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
-          `async` `function` `*` `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
-
-        AsyncFunctionDeclaration :
-          `async` `function` BindingIdentifier `(` FormalParameters `)` `{` AsyncFunctionBody `}`
-          `async` `function` `(` FormalParameters `)` `{` AsyncFunctionBody `}`
-      </emu-grammar>
-      <emu-alg>
-        1. Return *false*.
-      </emu-alg>
-      <emu-grammar>
-        ClassDeclaration :
-          `class` BindingIdentifier ClassTail
-          `class` ClassTail
-      </emu-grammar>
-      <emu-alg>
-        1. Return *false*.
-      </emu-alg>
-      <emu-grammar>
-        ExportDeclaration :
-          `export` ExportFromClause FromClause `;`
-          `export` NamedExports `;`
-          `export` `default` AssignmentExpression `;`
-      </emu-grammar>
-      <emu-alg>
-        1. Return *false*.
       </emu-alg>
     </emu-clause>
 
