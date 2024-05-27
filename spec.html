@@ -20152,7 +20152,7 @@
       <emu-grammar>UnaryExpression : CoverAwaitExpressionAndAwaitUsingDeclarationHead</emu-grammar><br>
       the interpretation of |CoverAwaitExpressionAndAwaitUsingDeclarationHead| is refined using the following grammar:
     </p>
-    <emu-grammar>
+    <emu-grammar type="definition">
       AwaitExpression[Yield] :
         `await` UnaryExpression[?Yield, +Await]
     </emu-grammar>
@@ -25494,9 +25494,6 @@
 
       AsyncFunctionBody :
         FunctionBody[~Yield, +Await]
-
-      AwaitExpression[Yield] :
-        `await` UnaryExpression[?Yield, +Await]
     </emu-grammar>
 
     <emu-note>
