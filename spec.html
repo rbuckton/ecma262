@@ -4581,7 +4581,6 @@
           InitializeReferencedBinding (
             _V_: a Reference Record,
             _W_: an ECMAScript language value,
-            _kind_: one of ~normal~, ~sync-dispose~, or ~async-dispose~,
           ): either a normal completion containing ~unused~ or an abrupt completion
         </h1>
         <dl class="header">
@@ -4590,7 +4589,7 @@
           1. Assert: IsUnresolvableReference(_V_) is *false*.
           1. Let _base_ be _V_.[[Base]].
           1. Assert: _base_ is an Environment Record.
-          1. Return ? _base_.InitializeBinding(_V_.[[ReferencedName]], _W_, _kind_).
+          1. Return ? _base_.InitializeBinding(_V_.[[ReferencedName]], _W_).
         </emu-alg>
       </emu-clause>
 
@@ -10168,7 +10167,7 @@
         </dl>
         <emu-alg>
           1. If _environment_ is not *undefined*, then
-            1. Perform ! _environment_.InitializeBinding(_name_, _value_, ~normal~).
+            1. Perform ! _environment_.InitializeBinding(_name_, _value_).
             1. Return ~unused~.
           1. Let _lhs_ be ? ResolveBinding(_name_).
           1. Return ? PutValue(_lhs_, _value_).
@@ -10240,7 +10239,7 @@
             1. Let _defaultValue_ be ? Evaluation of |Initializer|.
             1. Set _v_ to ? GetValue(_defaultValue_).
         1. If _environment_ is *undefined*, return ? PutValue(_lhs_, _v_).
-        1. Return ? InitializeReferencedBinding(_lhs_, _v_, ~normal~).
+        1. Return ? InitializeReferencedBinding(_lhs_, _v_).
       </emu-alg>
       <emu-grammar>BindingElement : BindingPattern Initializer?</emu-grammar>
       <emu-alg>
@@ -10265,7 +10264,7 @@
             1. Set _next_ to ? IteratorStepValue(_iteratorRecord_).
           1. If _next_ is ~done~, then
             1. If _environment_ is *undefined*, return ? PutValue(_lhs_, _A_).
-            1. Return ? InitializeReferencedBinding(_lhs_, _A_, ~normal~).
+            1. Return ? InitializeReferencedBinding(_lhs_, _A_).
           1. Perform ! CreateDataPropertyOrThrow(_A_, ! ToString(𝔽(_n_)), _next_).
           1. Set _n_ to _n_ + 1.
       </emu-alg>
@@ -10704,7 +10703,6 @@
               InitializeBinding (
                 _N_: a String,
                 _V_: an ECMAScript language value,
-                _kind_: one of ~normal~, ~sync-dispose~, or ~async-dispose~,
               ): either a normal completion containing ~unused~ or a throw completion
             </td>
             <td>
@@ -10874,7 +10872,6 @@
             InitializeBinding (
               _N_: a String,
               _V_: an ECMAScript language value,
-              _kind_: one of ~normal~, ~sync-dispose~, or ~async-dispose~,
             ): either a normal completion containing ~unused~ or a throw completion
           </h1>
           <dl class="header">
@@ -10886,7 +10883,6 @@
           </dl>
           <emu-alg>
             1. Assert: _envRec_ must have an uninitialized binding for _N_.
-            1. If _kind_ is not ~normal~, perform ? AddDisposableResource(_envRec_.[[DisposeCapability]], _V_, _kind_).
             1. Set the bound value for _N_ in _envRec_ to _V_.
             1. <emu-not-ref>Record</emu-not-ref> that the binding for _N_ in _envRec_ has been initialized.
             1. Return ~unused~.
@@ -10912,7 +10908,7 @@
             1. [id="step-setmutablebinding-missing-binding"] If _envRec_ does not have a binding for _N_, then
               1. If _S_ is *true*, throw a *ReferenceError* exception.
               1. Perform ! _envRec_.CreateMutableBinding(_N_, *true*).
-              1. Perform ! _envRec_.InitializeBinding(_N_, _V_, ~normal~).
+              1. Perform ! _envRec_.InitializeBinding(_N_, _V_).
               1. Return ~unused~.
             1. If the binding for _N_ in _envRec_ is a strict binding, set _S_ to *true*.
             1. If the binding for _N_ in _envRec_ has not yet been initialized, then
@@ -11122,7 +11118,6 @@
             InitializeBinding (
               _N_: a String,
               _V_: an ECMAScript language value,
-              _kind_: one of ~normal~, ~sync-dispose~, or ~async-dispose~,
             ): either a normal completion containing ~unused~ or a throw completion
           </h1>
           <dl class="header">
@@ -11133,7 +11128,6 @@
             <dd>It is used to set the bound value of the current binding of the identifier whose name is _N_ to the value _V_.</dd>
           </dl>
           <emu-alg>
-            1. Assert: _kind_ is ~normal~.
             1. Perform ? <emu-meta effects="user-code">_envRec_.SetMutableBinding(_N_, _V_, *false*)</emu-meta>.
             1. Return ~unused~.
           </emu-alg>
@@ -11524,7 +11518,6 @@
             InitializeBinding (
               _N_: a String,
               _V_: an ECMAScript language value,
-              _kind_: one of ~normal~, ~sync-dispose~, or ~async-dispose~,
             ): either a normal completion containing ~unused~ or a throw completion
           </h1>
           <dl class="header">
@@ -11537,11 +11530,10 @@
           <emu-alg>
             1. Let _DclRec_ be _envRec_.[[DeclarativeRecord]].
             1. If ! _DclRec_.HasBinding(_N_) is *true*, then
-              1. Return ? _DclRec_.InitializeBinding(_N_, _V_, _kind_).
-            1. Assert: _kind_ is ~normal~.
+              1. Return ? _DclRec_.InitializeBinding(_N_, _V_).
             1. Assert: If the binding exists, it must be in the Object Environment Record.
             1. Let _ObjRec_ be _envRec_.[[ObjectRecord]].
-            1. Return ? <emu-meta effects="user-code">_ObjRec_.InitializeBinding(_N_, _V_, ~normal~)</emu-meta>.
+            1. Return ? <emu-meta effects="user-code">_ObjRec_.InitializeBinding(_N_, _V_)</emu-meta>.
           </emu-alg>
         </emu-clause>
 
@@ -11770,7 +11762,7 @@
             1. Let _extensible_ be ? IsExtensible(_globalObject_).
             1. If _hasProperty_ is *false* and _extensible_ is *true*, then
               1. Perform ? <emu-meta effects="user-code">_ObjRec_.CreateMutableBinding(_N_, _D_)</emu-meta>.
-              1. Perform ? <emu-meta effects="user-code">_ObjRec_.InitializeBinding(_N_, *undefined*, ~normal~)</emu-meta>.
+              1. Perform ? <emu-meta effects="user-code">_ObjRec_.InitializeBinding(_N_, *undefined*)</emu-meta>.
             1. Return ~unused~.
           </emu-alg>
         </emu-clause>
@@ -14302,7 +14294,7 @@
           1. If _alreadyDeclared_ is *false*, then
             1. Perform ! _env_.CreateMutableBinding(_paramName_, *false*).
             1. If _hasDuplicates_ is *true*, then
-              1. Perform ! _env_.InitializeBinding(_paramName_, *undefined*, ~normal~).
+              1. Perform ! _env_.InitializeBinding(_paramName_, *undefined*).
         1. If _argumentsObjectNeeded_ is *true*, then
           1. If _strict_ is *true* or _simpleParameterList_ is *false*, then
             1. Let _ao_ be CreateUnmappedArgumentsObject(_argumentsList_).
@@ -14314,7 +14306,7 @@
             1. NOTE: In strict mode code early errors prevent attempting to assign to this binding, so its mutability is not observable.
           1. Else,
             1. Perform ! _env_.CreateMutableBinding(*"arguments"*, *false*).
-          1. Perform ! _env_.InitializeBinding(*"arguments"*, _ao_, ~normal~).
+          1. Perform ! _env_.InitializeBinding(*"arguments"*, _ao_).
           1. Let _parameterBindings_ be the list-concatenation of _parameterNames_ and « *"arguments"* ».
         1. Else,
           1. Let _parameterBindings_ be _parameterNames_.
@@ -14332,7 +14324,7 @@
             1. If _instantiatedVarNames_ does not contain _n_, then
               1. Append _n_ to _instantiatedVarNames_.
               1. Perform ! _env_.CreateMutableBinding(_n_, *false*).
-              1. Perform ! _env_.InitializeBinding(_n_, *undefined*, ~normal~).
+              1. Perform ! _env_.InitializeBinding(_n_, *undefined*).
           1. Let _varEnv_ be _env_.
         1. Else,
           1. NOTE: A separate Environment Record is needed to ensure that closures created by expressions in the formal parameter list do not have visibility of declarations in the function body.
@@ -14347,7 +14339,7 @@
                 1. Let _initialValue_ be *undefined*.
               1. Else,
                 1. Let _initialValue_ be ! _env_.GetBindingValue(_n_, *false*).
-              1. Perform ! _varEnv_.InitializeBinding(_n_, _initialValue_, ~normal~).
+              1. Perform ! _varEnv_.InitializeBinding(_n_, _initialValue_).
               1. NOTE: A var with the same name as a formal parameter initially has the same value as the corresponding initialized parameter.
         1. If _strict_ is *true*, then
           1. Let _lexEnv_ be _varEnv_.
@@ -14359,7 +14351,7 @@
                 1. NOTE: A var binding for _F_ is only instantiated here if it is neither a VarDeclaredName, the name of a formal parameter, or another |FunctionDeclaration|.
                 1. If _instantiatedVarNames_ does not contain _F_ and _F_ is not *"arguments"*, then
                   1. Perform ! _varEnv_.CreateMutableBinding(_F_, *false*).
-                  1. Perform ! _varEnv_.InitializeBinding(_F_, *undefined*, ~normal~).
+                  1. Perform ! _varEnv_.InitializeBinding(_F_, *undefined*).
                   1. Append _F_ to _instantiatedVarNames_.
                 1. [id="step-functiondeclarationinstantiation-alt-funcdecl-eval"] When the |FunctionDeclaration| _f_ is evaluated, perform the following steps in place of the |FunctionDeclaration| Evaluation algorithm provided in <emu-xref href="#sec-function-definitions-runtime-semantics-evaluation"></emu-xref>:
                   1. Let _fEnv_ be the running execution context's VariableEnvironment.
@@ -21973,12 +21965,12 @@
             1. Let _fo_ be InstantiateFunctionObject of _d_ with arguments _env_ and _privateEnv_.
             1. [id="step-blockdeclarationinstantiation-initializebinding", normative-optional] If the host is a web browser or otherwise supports <emu-xref href="#sec-block-level-function-declarations-web-legacy-compatibility-semantics" title></emu-xref>, then
               1. If the binding for _fn_ in _env_ is an uninitialized binding, then
-                1. Perform ! _env_.InitializeBinding(_fn_, _fo_, ~normal~).
+                1. Perform ! _env_.InitializeBinding(_fn_, _fo_).
               1. Else,
                 1. Assert: _d_ is a |FunctionDeclaration|.
                 1. Perform ! _env_.SetMutableBinding(_fn_, _fo_, *false*).
             1. Else,
-              1. Perform ! _env_.InitializeBinding(_fn_, _fo_, ~normal~).
+              1. Perform ! _env_.InitializeBinding(_fn_, _fo_).
         1. Return ~unused~.
       </emu-alg>
     </emu-clause>
@@ -22109,7 +22101,7 @@
         <emu-alg>
           1. Assert: _kind_ is ~normal~.
           1. Let _lhs_ be ! ResolveBinding(StringValue of |BindingIdentifier|).
-          1. Perform ! InitializeReferencedBinding(_lhs_, *undefined*, ~normal~).
+          1. Perform ! InitializeReferencedBinding(_lhs_, *undefined*).
           1. Return ~unused~.
         </emu-alg>
         <emu-note>
@@ -22124,7 +22116,12 @@
           1. Else,
             1. Let _rhs_ be ? Evaluation of |Initializer|.
             1. Let _value_ be ? GetValue(_rhs_).
-          1. Perform ? InitializeReferencedBinding(_lhs_, _value_, _kind_).
+          1. If _kind_ is not ~normal~, then
+            1. Assert: IsUnresolvableReference(_lhs_) is *false*.
+            1. Let _base_ be _lhs_.[[Base]].
+            1. Assert: _base_ is a Declarative Environment Record.
+            1. Perform ? AddDisposableResource(_base_.[[DisposeCapability]], _value_, _kind_).
+          1. Perform ? InitializeReferencedBinding(_lhs_, _value_).
           1. Return ~unused~.
         </emu-alg>
         <emu-grammar>LexicalBinding : BindingPattern Initializer</emu-grammar>
@@ -22295,7 +22292,7 @@
           1. Let _restObj_ be OrdinaryObjectCreate(%Object.prototype%).
           1. Perform ? CopyDataProperties(_restObj_, _value_, _excludedNames_).
           1. If _environment_ is *undefined*, return ? PutValue(_lhs_, _restObj_).
-          1. Return ? InitializeReferencedBinding(_lhs_, _restObj_, ~normal~).
+          1. Return ? InitializeReferencedBinding(_lhs_, _restObj_).
         </emu-alg>
       </emu-clause>
 
@@ -22332,7 +22329,7 @@
               1. Let _defaultValue_ be ? Evaluation of |Initializer|.
               1. Set _v_ to ? GetValue(_defaultValue_).
           1. If _environment_ is *undefined*, return ? PutValue(_lhs_, _v_).
-          1. Return ? InitializeReferencedBinding(_lhs_, _v_, ~normal~).
+          1. Return ? InitializeReferencedBinding(_lhs_, _v_).
         </emu-alg>
       </emu-clause>
     </emu-clause>
@@ -22713,7 +22710,7 @@
             1. For each element _bn_ of _perIterationBindings_, do
               1. Perform ! _thisIterationEnv_.CreateMutableBinding(_bn_, *false*).
               1. Let _lastValue_ be ? _lastIterationEnv_.GetBindingValue(_bn_, *true*).
-              1. Perform ! _thisIterationEnv_.InitializeBinding(_bn_, _lastValue_, ~normal~).
+              1. Perform ! _thisIterationEnv_.InitializeBinding(_bn_, _lastValue_).
             1. Set the running execution context's LexicalEnvironment to _thisIterationEnv_.
           1. Return ~unused~.
         </emu-alg>
@@ -23057,7 +23054,15 @@
                 1. Assert: _lhs_ binds a single name.
                 1. Let _lhsName_ be the sole element of the BoundNames of _lhs_.
                 1. Let _lhsRef_ be ! ResolveBinding(_lhsName_).
-                1. Let _status_ be Completion(InitializeReferencedBinding(_lhsRef_, _nextValue_, _kind_)).
+                1. If _kind_ is not ~normal~, then
+                  1. Assert: IsUnresolvableReference(_lhsRef_) is *false*.
+                  1. Let _base_ be _lhsRef_.[[Base]].
+                  1. Assert: _base_ is a Declarative Environment Record.
+                  1. Let _status_ be Completion(AddDisposableResource(_base_.[[DisposeCapability]], _nextValue_, _kind_)).
+                1. Else,
+                  1. Let _status_ be NormalCompletion(~unused~).
+                1. If _status_ is a normal completion, then
+                  1. Set _status_ to Completion(InitializeReferencedBinding(_lhsRef_, _nextValue_)).
             1. If _status_ is an abrupt completion, then
               1. If _iterationEnv_ is not *undefined*, then
                 1. Set _status_ to Completion(DisposeResources(_iterationEnv_.[[DisposeCapability]], _status_)).
@@ -24331,7 +24336,7 @@
         1. Let _closure_ be OrdinaryFunctionCreate(%Function.prototype%, _sourceText_, |FormalParameters|, |FunctionBody|, ~non-lexical-this~, _funcEnv_, _privateEnv_).
         1. Perform SetFunctionName(_closure_, _name_).
         1. Perform MakeConstructor(_closure_).
-        1. Perform ! _funcEnv_.InitializeBinding(_name_, _closure_, ~normal~).
+        1. Perform ! _funcEnv_.InitializeBinding(_name_, _closure_).
         1. Return _closure_.
       </emu-alg>
       <emu-note>
@@ -24885,7 +24890,7 @@
         1. Perform SetFunctionName(_closure_, _name_).
         1. Let _prototype_ be OrdinaryObjectCreate(%GeneratorPrototype%).
         1. Perform ! DefinePropertyOrThrow(_closure_, *"prototype"*, PropertyDescriptor { [[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false* }).
-        1. Perform ! _funcEnv_.InitializeBinding(_name_, _closure_, ~normal~).
+        1. Perform ! _funcEnv_.InitializeBinding(_name_, _closure_).
         1. Return _closure_.
       </emu-alg>
       <emu-note>
@@ -25122,7 +25127,7 @@
         1. Perform SetFunctionName(_closure_, _name_).
         1. Let _prototype_ be OrdinaryObjectCreate(%AsyncGeneratorPrototype%).
         1. Perform ! DefinePropertyOrThrow(_closure_, *"prototype"*, PropertyDescriptor { [[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false* }).
-        1. Perform ! _funcEnv_.InitializeBinding(_name_, _closure_, ~normal~).
+        1. Perform ! _funcEnv_.InitializeBinding(_name_, _closure_).
         1. Return _closure_.
       </emu-alg>
       <emu-note>
@@ -25822,7 +25827,7 @@
             1. Append _element_ to _staticElements_.
         1. Set the running execution context's LexicalEnvironment to _env_.
         1. If _classBinding_ is not *undefined*, then
-          1. Perform ! _classEnv_.InitializeBinding(_classBinding_, _F_, ~normal~).
+          1. Perform ! _classEnv_.InitializeBinding(_classBinding_, _F_).
         1. Set _F_.[[PrivateMethods]] to _instancePrivateMethods_.
         1. Set _F_.[[Fields]] to _instanceFields_.
         1. For each PrivateElement _method_ of _staticPrivateMethods_, do
@@ -26035,7 +26040,7 @@
         1. Let _sourceText_ be the source text matched by |AsyncFunctionExpression|.
         1. Let _closure_ be OrdinaryFunctionCreate(%AsyncFunction.prototype%, _sourceText_, |FormalParameters|, |AsyncFunctionBody|, ~non-lexical-this~, _funcEnv_, _privateEnv_).
         1. Perform SetFunctionName(_closure_, _name_).
-        1. Perform ! _funcEnv_.InitializeBinding(_name_, _closure_, ~normal~).
+        1. Perform ! _funcEnv_.InitializeBinding(_name_, _closure_).
         1. Return _closure_.
       </emu-alg>
       <emu-note>
@@ -29273,14 +29278,14 @@
                 1. If _in_.[[ImportName]] is ~namespace-object~, then
                   1. Let _namespace_ be GetModuleNamespace(_importedModule_).
                   1. Perform ! _env_.CreateImmutableBinding(_in_.[[LocalName]], *true*).
-                1. Perform ! _env_.InitializeBinding(_in_.[[LocalName]], _namespace_, ~normal~).
+                1. Perform ! _env_.InitializeBinding(_in_.[[LocalName]], _namespace_).
                 1. Else,
                   1. Let _resolution_ be _importedModule_.ResolveExport(_in_.[[ImportName]]).
                   1. If _resolution_ is either *null* or ~ambiguous~, throw a *SyntaxError* exception.
                   1. If _resolution_.[[BindingName]] is ~namespace~, then
                     1. Let _namespace_ be GetModuleNamespace(_resolution_.[[Module]]).
                     1. Perform ! _env_.CreateImmutableBinding(_in_.[[LocalName]], *true*).
-                  1. Perform ! _env_.InitializeBinding(_in_.[[LocalName]], _namespace_, ~normal~).
+                  1. Perform ! _env_.InitializeBinding(_in_.[[LocalName]], _namespace_).
                   1. Else,
                     1. Perform CreateImportBinding(_env_, _in_.[[LocalName]], _resolution_.[[Module]], _resolution_.[[BindingName]]).
               1. Let _moduleContext_ be a new ECMAScript code execution context.
@@ -29300,7 +29305,7 @@
                 1. For each element _dn_ of the BoundNames of _d_, do
                   1. If _declaredVarNames_ does not contain _dn_, then
                     1. Perform ! _env_.CreateMutableBinding(_dn_, *false*).
-                    1. Perform ! _env_.InitializeBinding(_dn_, *undefined*, ~normal~).
+                    1. Perform ! _env_.InitializeBinding(_dn_, *undefined*).
                     1. Append _dn_ to _declaredVarNames_.
               1. Let _lexDeclarations_ be the LexicallyScopedDeclarations of _code_.
               1. Let _privateEnv_ be *null*.
@@ -29312,7 +29317,7 @@
                     1. Perform ! _env_.CreateMutableBinding(_dn_, *false*).
                   1. If _d_ is either a |FunctionDeclaration|, a |GeneratorDeclaration|, an |AsyncFunctionDeclaration|, or an |AsyncGeneratorDeclaration|, then
                     1. Let _fo_ be InstantiateFunctionObject of _d_ with arguments _env_ and _privateEnv_.
-                  1. Perform ! _env_.InitializeBinding(_dn_, _fo_, ~normal~).
+                  1. Perform ! _env_.InitializeBinding(_dn_, _fo_).
               1. Remove _moduleContext_ from the execution context stack.
               1. Return ~unused~.
             </emu-alg>
@@ -29521,7 +29526,7 @@
               1. Set _module_.[[Environment]] to _env_.
               1. For each String _exportName_ of _module_.[[ExportNames]], do
                 1. Perform ! _env_.CreateMutableBinding(_exportName_, *false*).
-                1. Perform ! _env_.InitializeBinding(_exportName_, *undefined*, ~normal~).
+                1. Perform ! _env_.InitializeBinding(_exportName_, *undefined*).
               1. Return NormalCompletion(~unused~).
             </emu-alg>
           </emu-clause>
@@ -30658,7 +30663,7 @@
                       1. Set _bindingExists_ to ! _varEnv_.HasBinding(_F_).
                       1. If _bindingExists_ is *false*, then
                         1. Perform ! _varEnv_.CreateMutableBinding(_F_, *true*).
-                        1. Perform ! _varEnv_.InitializeBinding(_F_, *undefined*, ~normal~).
+                        1. Perform ! _varEnv_.InitializeBinding(_F_, *undefined*).
                     1. Append _F_ to _declaredFunctionOrVarNames_.
                   1. [id="step-evaldeclarationinstantiation-alt-funcdecl-eval"] When the |FunctionDeclaration| _f_ is evaluated, perform the following steps in place of the |FunctionDeclaration| Evaluation algorithm provided in <emu-xref href="#sec-function-definitions-runtime-semantics-evaluation"></emu-xref>:
                     1. Let _gEnv_ be the running execution context's VariableEnvironment.
@@ -30685,7 +30690,7 @@
               1. If _bindingExists_ is *false*, then
                 1. NOTE: The following invocation cannot return an abrupt completion because of the validation preceding step <emu-xref href="#step-evaldeclarationinstantiation-post-validation"></emu-xref>.
                 1. Perform ! _varEnv_.CreateMutableBinding(_fn_, *true*).
-                1. Perform ! _varEnv_.InitializeBinding(_fn_, _fo_, ~normal~).
+                1. Perform ! _varEnv_.InitializeBinding(_fn_, _fo_).
               1. Else,
                 1. Perform ! _varEnv_.SetMutableBinding(_fn_, _fo_, *false*).
           1. For each String _vn_ of _declaredVarNames_, do
@@ -30696,7 +30701,7 @@
               1. If _bindingExists_ is *false*, then
                 1. NOTE: The following invocation cannot return an abrupt completion because of the validation preceding step <emu-xref href="#step-evaldeclarationinstantiation-post-validation"></emu-xref>.
                 1. Perform ! _varEnv_.CreateMutableBinding(_vn_, *true*).
-                1. Perform ! _varEnv_.InitializeBinding(_vn_, *undefined*, ~normal~).
+                1. Perform ! _varEnv_.InitializeBinding(_vn_, *undefined*).
           1. Return ~unused~.
         </emu-alg>
       </emu-clause>
