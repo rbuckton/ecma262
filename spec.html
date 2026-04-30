@@ -32797,7 +32797,7 @@
           <li>may be used as the value of an `extends` clause of a class definition. Subclass constructors that intend to inherit the specified SuppressedError behaviour must include a `super` call to the SuppressedError constructor to create and initialize subclass instances with an [[ErrorData]] internal slot.</li>
         </ul>
 
-        <emu-clause id="sec-suppressederror">
+        <emu-clause id="sec-suppressederror" type="built-in-function">
           <h1>SuppressedError ( _error_, _suppressed_, _message_ )</h1>
           <p>This function performs the following steps when called:</p>
           <emu-alg>
@@ -49694,9 +49694,9 @@ THH:mm:ss.sss
           </emu-alg>
         </emu-clause>
 
-        <emu-clause id="sec-iterator.prototype-%symbol.dispose%">
+        <emu-clause id="sec-iterator.prototype-%symbol.dispose%" type="built-in function">
           <h1>Iterator.prototype [ %Symbol.dispose% ] ( )</h1>
-          <p>This function performs the following steps when called:</p>
+          <p>This method performs the following steps when called:</p>
           <emu-alg>
             1. Let _obj_ be the *this* value.
             1. Let _return_ be ? GetMethod(_obj_, *"return"*).
@@ -49709,7 +49709,7 @@ THH:mm:ss.sss
 
         <emu-clause oldids="sec-%iteratorprototype%-@@iterator,sec-%iteratorprototype%-%symbol.iterator%" id="sec-iterator.prototype-%symbol.iterator%" type="built-in function">
           <h1>Iterator.prototype [ %Symbol.iterator% ] ( )</h1>
-          <p>This function performs the following steps when called:</p>
+          <p>This method performs the following steps when called:</p>
           <emu-alg>
             1. Return the *this* value.
           </emu-alg>
@@ -49755,9 +49755,9 @@ THH:mm:ss.sss
         <p>All objects defined in this specification that implement the async iterator interface also inherit from %AsyncIteratorPrototype%. ECMAScript code may also define objects that inherit from %AsyncIteratorPrototype%. The %AsyncIteratorPrototype% object provides a place where additional methods that are applicable to all async iterator objects may be added.</p>
       </emu-note>
 
-      <emu-clause id="sec-%asynciteratorprototype%-%symbol.asyncdispose%">
+      <emu-clause id="sec-%asynciteratorprototype%-%symbol.asyncdispose%" type="built-in function">
         <h1>%AsyncIteratorPrototype% [ %Symbol.asyncDispose% ] ( )</h1>
-        <p>This function performs the following steps when called:</p>
+        <p>This method performs the following steps when called:</p>
         <emu-alg>
           1. Let _obj_ be the *this* value.
           1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
@@ -49781,7 +49781,7 @@ THH:mm:ss.sss
 
       <emu-clause oldids="sec-asynciteratorprototype-asynciterator" id="sec-%asynciteratorprototype%-%symbol.asynciterator%" type="built-in function">
         <h1>%AsyncIteratorPrototype% [ %Symbol.asyncIterator% ] ( )</h1>
-        <p>This function performs the following steps when called:</p>
+        <p>This method performs the following steps when called:</p>
         <emu-alg>
           1. Return the *this* value.
         </emu-alg>
@@ -50067,7 +50067,7 @@ THH:mm:ss.sss
         <li>may be used as the value in an `extends` clause of a class definition. Subclass constructors that intend to inherit the specified DisposableStack behaviour must include a `super` call to the DisposableStack constructor to create and initialize the subclass instance with the internal state necessary to support the `DisposableStack` and `DisposableStack.prototype` built-in methods.</li>
       </ul>
 
-      <emu-clause id="sec-disposablestack">
+      <emu-clause id="sec-disposablestack" type="built-in function">
         <h1>DisposableStack ( )</h1>
         <p>This function performs the following steps when called:</p>
         <emu-alg>
@@ -50105,7 +50105,7 @@ THH:mm:ss.sss
         <li>does not have a [[DisposableState]] internal slot or any of the other internal slots of DisposableStack instances.</li>
       </ul>
 
-      <emu-clause id="sec-disposablestack.prototype.adopt">
+      <emu-clause id="sec-disposablestack.prototype.adopt" type="built-in function">
         <h1>DisposableStack.prototype.adopt ( _value_, _onDispose_ )</h1>
         <p>This method performs the following steps when called:</p>
         <emu-alg>
@@ -50126,7 +50126,7 @@ THH:mm:ss.sss
         <p>The initial value of `DisposableStack.prototype.constructor` is %DisposableStack%.</p>
       </emu-clause>
 
-      <emu-clause id="sec-disposablestack.prototype.defer">
+      <emu-clause id="sec-disposablestack.prototype.defer" type="built-in function">
         <h1>DisposableStack.prototype.defer ( _onDispose_ )</h1>
         <p>This method performs the following steps when called:</p>
         <emu-alg>
@@ -50139,7 +50139,7 @@ THH:mm:ss.sss
         </emu-alg>
       </emu-clause>
 
-      <emu-clause id="sec-disposablestack.prototype.dispose">
+      <emu-clause id="sec-disposablestack.prototype.dispose" type="built-in function">
         <h1>DisposableStack.prototype.dispose ( )</h1>
         <p>This method performs the following steps when called:</p>
         <emu-alg>
@@ -50151,7 +50151,7 @@ THH:mm:ss.sss
         </emu-alg>
       </emu-clause>
 
-      <emu-clause id="sec-get-disposablestack.prototype.disposed">
+      <emu-clause id="sec-get-disposablestack.prototype.disposed" type="built-in function">
         <h1>get DisposableStack.prototype.disposed</h1>
         <p>`DisposableStack.prototype.disposed` is an accessor property whose set accessor function is *undefined*. Its get accessor function performs the following steps when called:</p>
         <emu-alg>
@@ -50162,7 +50162,7 @@ THH:mm:ss.sss
         </emu-alg>
       </emu-clause>
 
-      <emu-clause id="sec-disposablestack.prototype.move">
+      <emu-clause id="sec-disposablestack.prototype.move" type="built-in function">
         <h1>DisposableStack.prototype.move ( )</h1>
         <p>This method performs the following steps when called:</p>
         <emu-alg>
@@ -50178,7 +50178,7 @@ THH:mm:ss.sss
         </emu-alg>
       </emu-clause>
 
-      <emu-clause id="sec-disposablestack.prototype.use">
+      <emu-clause id="sec-disposablestack.prototype.use" type="built-in function">
         <h1>DisposableStack.prototype.use ( _value_ )</h1>
         <p>This method performs the following steps when called:</p>
         <emu-alg>
@@ -50265,7 +50265,7 @@ THH:mm:ss.sss
         <li>may be used as the value in an `extends` clause of a class definition. Subclass constructors that intend to inherit the specified AsyncDisposableStack behaviour must include a `super` call to the AsyncDisposableStack constructor to create and initialize the subclass instance with the internal state necessary to support the `AsyncDisposableStack` and `AsyncDisposableStack.prototype` built-in methods.</li>
       </ul>
 
-      <emu-clause id="sec-asyncdisposablestack">
+      <emu-clause id="sec-asyncdisposablestack" type="built-in function">
         <h1>AsyncDisposableStack ( )</h1>
         <p>This function performs the following steps when called:</p>
         <emu-alg>
@@ -50303,7 +50303,7 @@ THH:mm:ss.sss
         <li>does not have an [[AsyncDisposableState]] internal slot or any of the other internal slots of AsyncDisposableStack instances.</li>
       </ul>
 
-      <emu-clause id="sec-asyncdisposablestack.prototype.adopt">
+      <emu-clause id="sec-asyncdisposablestack.prototype.adopt" type="built-in function">
         <h1>AsyncDisposableStack.prototype.adopt ( _value_, _onDisposeAsync_ )</h1>
         <p>This method performs the following steps when called:</p>
         <emu-alg>
@@ -50324,7 +50324,7 @@ THH:mm:ss.sss
         <p>The initial value of `AsyncDisposableStack.prototype.constructor` is %AsyncDisposableStack%.</p>
       </emu-clause>
 
-      <emu-clause id="sec-asyncdisposablestack.prototype.defer">
+      <emu-clause id="sec-asyncdisposablestack.prototype.defer" type="built-in function">
         <h1>AsyncDisposableStack.prototype.defer ( _onDisposeAsync_ )</h1>
         <p>This method performs the following steps when called:</p>
         <emu-alg>
@@ -50337,7 +50337,7 @@ THH:mm:ss.sss
         </emu-alg>
       </emu-clause>
 
-      <emu-clause id="sec-asyncdisposablestack.prototype.disposeAsync">
+      <emu-clause id="sec-asyncdisposablestack.prototype.disposeAsync" type="built-in function">
         <h1>AsyncDisposableStack.prototype.disposeAsync ( )</h1>
         <p>This async method performs the following steps when called:</p>
         <emu-alg>
@@ -50349,7 +50349,7 @@ THH:mm:ss.sss
         </emu-alg>
       </emu-clause>
 
-      <emu-clause id="sec-get-asyncdisposablestack.prototype.disposed">
+      <emu-clause id="sec-get-asyncdisposablestack.prototype.disposed" type="built-in function">
         <h1>get AsyncDisposableStack.prototype.disposed</h1>
         <p>`AsyncDisposableStack.prototype.disposed` is an accessor property whose set accessor function is *undefined*. Its get accessor function performs the following steps when called:</p>
         <emu-alg>
@@ -50360,7 +50360,7 @@ THH:mm:ss.sss
         </emu-alg>
       </emu-clause>
 
-      <emu-clause id="sec-asyncdisposablestack.prototype.move">
+      <emu-clause id="sec-asyncdisposablestack.prototype.move" type="built-in function">
         <h1>AsyncDisposableStack.prototype.move ( )</h1>
         <p>This method performs the following steps when called:</p>
         <emu-alg>
@@ -50376,7 +50376,7 @@ THH:mm:ss.sss
         </emu-alg>
       </emu-clause>
 
-      <emu-clause id="sec-asyncdisposablestack.prototype.use">
+      <emu-clause id="sec-asyncdisposablestack.prototype.use" type="built-in function">
         <h1>AsyncDisposableStack.prototype.use ( _value_ )</h1>
         <p>This method performs the following steps when called:</p>
         <emu-alg>
