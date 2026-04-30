@@ -7652,7 +7652,6 @@
         1. If _needsAwait_ is *true* and _hasAwaited_ is *false*, then
           1. Perform ! Await(*undefined*).
         1. NOTE: After _disposeCapability_ has been disposed, it will never be used again. The contents of _disposeCapability_.[[DisposableResourceStack]] can be discarded in implementations, such as by garbage collection, at this point.
-        1. Set _disposeCapability_.[[DisposableResourceStack]] to a new empty List.
         1. Return ? _outputCompletion_.
       </emu-alg>
     </emu-clause>
