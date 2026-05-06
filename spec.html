@@ -1378,7 +1378,7 @@
                 `"Symbol.asyncDispose"`
               </td>
               <td>
-                A method that asynchronously performs explicit resource cleanup on an object. Called by the semantics of the `await using` declaration and AsyncDisposableStack objects.
+                A method that asynchronously performs resource cleanup on an object. Called by AsyncDisposableStack objects and the semantics of the `await using` declaration when evaluation of its containing scope completes.
               </td>
             </tr>
             <tr>
@@ -1400,7 +1400,7 @@
                 `"Symbol.dispose"`
               </td>
               <td>
-                A method that performs explicit resource cleanup on an object. Called by the semantics of the `using` declaration and DisposableStack objects.
+                A method that performs explicit resource cleanup on an object. Called by DisposableStack objects, AsyncDisposableStack objects, and the semantics of the `using` declaration when evaluation of its containing scope completes.
               </td>
             </tr>
             <tr>
