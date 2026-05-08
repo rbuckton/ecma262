@@ -7514,25 +7514,6 @@
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id="sec-dispose" type="abstract operation">
-      <h1>
-        Dispose (
-          _value_: an Object or *undefined*,
-          _kind_: ~sync-dispose~ or ~async-dispose~,
-          _method_: a function object or *undefined*,
-        ): either a normal completion containing *undefined* or a throw completion
-      </h1>
-      <dl class="header">
-      </dl>
-      <emu-alg>
-        1. If _method_ is *undefined*, let _result_ be *undefined*.
-        1. Else, let _result_ be ? Call(_method_, _value_).
-        1. If _kind_ is ~async-dispose~, then
-          1. Perform ? Await(_result_).
-        1. Return *undefined*.
-      </emu-alg>
-    </emu-clause>
-
     <emu-clause id="sec-disposeresources" type="abstract operation">
       <h1>
         DisposeResources (
