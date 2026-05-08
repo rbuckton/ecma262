@@ -7432,7 +7432,7 @@
               a function object or *undefined*
             </td>
             <td>
-              A function object that will be called with [[ResourceValue]] as its *this* value when the resource disposed.
+              A function object that will be called with [[ResourceValue]] as its *this* value when the resource is disposed.
             </td>
           </tr>
         </table>
@@ -22599,7 +22599,7 @@
           1. If the second |Expression| is present, let _increment_ be the second |Expression|; else let _increment_ be ~empty~.
           1. Let _bodyResult_ be Completion(ForBodyEvaluation(_test_, _increment_, |Statement|, _perIterationLets_, _labelSet_)).
           1. Set _bodyResult_ to Completion(DisposeResources(_loopEnv_.[[DisposableResourceStack]], _bodyResult_)).
-          1. Assert: If _bodyResult_.[[Type]] is ~normal~, then _bodyResult_.[[Value]] is not ~empty~.
+          1. Assert: If _bodyResult_ is a normal completion, _bodyResult_.[[Value]] is not ~empty~.
           1. Set the running execution context's LexicalEnvironment to _oldEnv_.
           1. Return ? _bodyResult_.
         </emu-alg>
@@ -32759,7 +32759,7 @@
         <ul>
           <li>is <dfn>%SuppressedError.prototype%</dfn>.</li>
           <li>is an ordinary object.</li>
-          <li>is not an Error instance or an SuppressedError instance and does not have an [[ErrorData]] internal slot.</li>
+          <li>is not an Error instance or a SuppressedError instance and does not have an [[ErrorData]] internal slot.</li>
           <li>has a [[Prototype]] internal slot whose value is %Error.prototype%.</li>
         </ul>
 
@@ -32781,7 +32781,7 @@
 
       <emu-clause id="sec-properties-of-suppressederror-instances">
         <h1>Properties of SuppressedError Instances</h1>
-        <p>SuppressedError instances are ordinary objects that inherit properties from their SuppressedError prototype object and have an [[ErrorData]] internal slot whose value is *undefined*. The only specified use of [[ErrorData]] is by `Object.prototype.toString` (<emu-xref href="#sec-object.prototype.tostring"></emu-xref>) to identify Error, AggregateError, SuppressedError, or _NativeError_ instances.</p>
+        <p>SuppressedError instances are ordinary objects that inherit properties from their SuppressedError prototype object and have an [[ErrorData]] internal slot whose value is *undefined*. The only specified use of [[ErrorData]] is to identify Error, AggregateError, SuppressedError, and _NativeError_ instances as Error objects within `Object.prototype.toString` and `Error.isError`.</p>
       </emu-clause>
     </emu-clause>
 
